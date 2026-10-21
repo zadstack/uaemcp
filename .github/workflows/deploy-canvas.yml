@@ -1,0 +1,83 @@
+name: Deploy static canvas
+
+# Builds the static edition (all public pages + retained JSON snapshots from the
+# production Worker) and publishes it to the Maarad canvas.
+# Requires the repository secret MAARAD_DEPLOY_KEY; without it the build still
+# runs and uploads the ZIP as an artifact, and the deploy step is skipped.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-canvas
+  cancel-in-progress: false
+
+env:
+  MAARAD_API_BASE: https://maarad.zadstack.com
+  MAARAD_CANVAS_ID: ${{ vars.MAARAD_CANVAS_ID || '01a15f25-0111-703b-abdb-4171fdc3e930' }}
+  UAEMCP_LIVE_ORIGIN: ${{ vars.UAEMCP_LIVE_ORIGIN || 'https://uae-open-data.zadstack.com' }}
+
+jobs:
+  static-canvas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+
+      - name: Start the local server
+        run: |
+          UAEMCP_RATE_LIMIT_PER_MINUTE=100000 UAEMCP_DATABASE_PATH="$RUNNER_TEMP/uaemcp.sqlite" \
+            nohup bun src/index.ts http --host 127.0.0.1 --port 8080 > "$RUNNER_TEMP/server.log" 2>&1 &
+          for attempt in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8080/ > /dev/null && exit 0
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/server.log"
+          exit 1
+
+      - name: Export the static site
+        run: bun scripts/export-static.ts --base http://127.0.0.1:8080 --live "$UAEMCP_LIVE_ORIGIN" --out dist/static --zip dist/site.zip
+
+      - name: Check the archive
+        run: |
+          unzip -l dist/site.zip | grep -E ' index\.html$' > /dev/null
+          ls -la dist/site.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: static-canvas
+          path: dist/site.zip
+          retention-days: 14
+
+      - name: Deploy to Maarad
+        env:
+          MAARAD_DEPLOY_KEY: ${{ secrets.MAARAD_DEPLOY_KEY }}
+        run: |
+          if [ -z "$MAARAD_DEPLOY_KEY" ]; then
+            echo "::notice::MAARAD_DEPLOY_KEY is not set; skipping the canvas deploy."
+            exit 0
+          fi
+          status=$(curl -sS -o "$RUNNER_TEMP/deploy.json" -w '%{http_code}' -X PUT \
+            "$MAARAD_API_BASE/v1/canvases/$MAARAD_CANVAS_ID/deploy" \
+            -H "Authorization: Bearer $MAARAD_DEPLOY_KEY" \
+            -H "Content-Type: application/zip" \
+            --data-binary @dist/site.zip)
+          cat "$RUNNER_TEMP/deploy.json"; echo
+          if [ "$status" != "200" ]; then
+            echo "::error::Maarad deploy returned HTTP $status"
+            exit 1
+          fi
+          url=$(jq -r '.url' "$RUNNER_TEMP/deploy.json")
+          version=$(jq -r '.version' "$RUNNER_TEMP/deploy.json")
+          echo "### Canvas published: version $version" >> "$GITHUB_STEP_SUMMARY"
+          echo "$url" >> "$GITHUB_STEP_SUMMARY"
+          curl -fsS -o /dev/null "$url"
