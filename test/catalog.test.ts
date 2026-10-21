@@ -25,7 +25,7 @@ describe("unified catalog", () => {
       officialPortalsIndexed: 48,
       liveRecordConnectors: 16,
       queryableDatasetsKnownMinimum: 222,
-      blockedConnectors: 1,
+      blockedConnectors: 3,
       keyRequiredPortals: 3,
     });
   });
