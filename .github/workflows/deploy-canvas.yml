@@ -2,8 +2,9 @@ name: Deploy static canvas
 
 # Builds the static edition (all public pages + retained JSON snapshots from the
 # production Worker) and publishes it to the Maarad canvas.
-# Requires the repository secret MAARAD_DEPLOY_KEY; without it the build still
-# runs and uploads the ZIP as an artifact, and the deploy step is skipped.
+# Reads the secret MAARAD_DEPLOY_KEY from the `MAARAD_DEPLOY_KEY` deployment
+# environment (a repository secret of the same name also works); without it the
+# build still runs and uploads the ZIP as an artifact, and the deploy step is skipped.
 
 on:
   push:
@@ -26,6 +27,9 @@ jobs:
   static-canvas:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    environment:
+      name: MAARAD_DEPLOY_KEY
+      url: https://maarad.zadstack.com/c/uae-mcp/
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
