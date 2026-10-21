@@ -77,6 +77,7 @@ import { tourismPulsePage } from "./tourism-pulse-web.js";
 import { loadEmploymentGender, type EmploymentGender } from "./employment-gender.js";
 import { employmentGenderPage } from "./employment-gender-web.js";
 import { applyPublicVisualSystem } from "./public-visual-system.js";
+import { BRAND_ASSETS } from "./brand-assets.js";
 
 type Json = Record<string, unknown>;
 const AERONAUTICAL_PUBLICATION_KINDS = ["airac_amendment", "supplement", "other"] as const;
@@ -164,11 +165,26 @@ async function dubaiFont(path: string, method: "GET" | "HEAD"): Promise<Response
   });
 }
 
+function brandAsset(path: string, method: "GET" | "HEAD"): Response | null {
+  const asset = BRAND_ASSETS.get(path);
+  if (!asset) return null;
+  const bytes = Uint8Array.from(atob(asset.base64), (char) => char.charCodeAt(0));
+  return new Response(method === "HEAD" ? null : bytes, {
+    headers: {
+      "content-type": asset.contentType,
+      "content-length": String(bytes.byteLength),
+      "cache-control": "public, max-age=604800",
+      "x-content-type-options": "nosniff",
+    },
+  });
+}
+
 export async function handleRest(request: Request, dependencies: RuntimeDependencies = REST_DEFAULTS): Promise<Response | null> {
   const url = new URL(request.url);
   const path = url.pathname.replace(/\/$/, "") || "/";
 
   try {
+    if ((request.method === "GET" || request.method === "HEAD") && BRAND_ASSETS.has(path)) return brandAsset(path, request.method);
     if ((request.method === "GET" || request.method === "HEAD") && DUBAI_FONT_FILES.has(path)) return await dubaiFont(path, request.method);
     if (request.method === "GET" && path === "/") return publicHtml(landingPage());
     if (request.method === "GET" && path === "/tools") return publicHtml(toolExplorerPage());
