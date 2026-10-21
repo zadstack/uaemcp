@@ -70,18 +70,29 @@ jobs:
             echo "::notice::MAARAD_DEPLOY_KEY is not set; skipping the canvas deploy."
             exit 0
           fi
-          status=$(curl -sS -o "$RUNNER_TEMP/deploy.json" -w '%{http_code}' -X PUT \
+          # The raw response carries a publicationToken (Maarad's optimistic-
+          # concurrency token). Never print it: keep the body in a private temp
+          # file outside the workspace, mask the token, log only chosen fields.
+          response="$(mktemp -p "$RUNNER_TEMP" maarad-deploy.XXXXXX)"
+          trap 'rm -f "$response"' EXIT
+          status=$(curl -sS -o "$response" -w '%{http_code}' -X PUT \
             "$MAARAD_API_BASE/v1/canvases/$MAARAD_CANVAS_ID/deploy" \
             -H "Authorization: Bearer $MAARAD_DEPLOY_KEY" \
             -H "Content-Type: application/zip" \
             --data-binary @dist/site.zip)
-          cat "$RUNNER_TEMP/deploy.json"; echo
-          if [ "$status" != "200" ]; then
-            echo "::error::Maarad deploy returned HTTP $status"
+          for token in $(jq -r '[.publicationToken?, .current?.publicationToken?] | map(select(type == "string" and length > 0)) | .[]' "$response" 2>/dev/null); do
+            echo "::add-mask::$token"
+          done
+          if [ "${status:0:1}" != "2" ]; then
+            code=$(jq -r '.code // .error // "unknown"' "$response" 2>/dev/null || echo "unparseable")
+            message=$(jq -r '.message // ""' "$response" 2>/dev/null | sed -E 's/[0-9A-Za-z_-]{16,}|[0-9a-f]{6,}…/[redacted]/g' | head -c 300 || true)
+            echo "::error::Maarad deploy returned HTTP $status ($code) $message"
             exit 1
           fi
-          url=$(jq -r '.url' "$RUNNER_TEMP/deploy.json")
-          version=$(jq -r '.version' "$RUNNER_TEMP/deploy.json")
-          echo "### Canvas published: version $version" >> "$GITHUB_STEP_SUMMARY"
+          outcome=$(jq -r '.outcome // "unknown"' "$response")
+          url=$(jq -r '.url' "$response")
+          version=$(jq -r '.version' "$response")
+          echo "outcome=$outcome version=$version url=$url"
+          echo "### Canvas $outcome: version $version" >> "$GITHUB_STEP_SUMMARY"
           echo "$url" >> "$GITHUB_STEP_SUMMARY"
           curl -fsS -o /dev/null "$url"
