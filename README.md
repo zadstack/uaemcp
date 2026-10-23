@@ -7,7 +7,7 @@
 <p align="center"><strong>The Emirates, queryable.</strong></p>
 
 <p align="center">
-  <a href="https://uae-open-data.zadstack.com/health"><img src="https://img.shields.io/badge/LIVE-uae--open--data.zadstack.com-087443?style=flat-square" alt="Live instance"></a>
+  <a href="https://uae-open-data.zadstack.com/health"><img src="https://img.shields.io/badge/instance-uae--open--data.zadstack.com-087443?style=flat-square" alt="Configured instance — open its health endpoint to check availability"></a>
   <a href="https://maarad.zadstack.com/c/uae-mcp/"><img src="https://img.shields.io/badge/STATIC-maarad.zadstack.com-173d2d?style=flat-square" alt="Static edition"></a>
   <a href="https://github.com/zadstack/uaemcp/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/zadstack/uaemcp/ci.yml?style=flat-square&label=CI" alt="CI status"></a>
   <a href="https://www.npmjs.com/package/uaemcp"><img src="https://img.shields.io/npm/v/uaemcp?style=flat-square&logo=npm" alt="npm version"></a>
