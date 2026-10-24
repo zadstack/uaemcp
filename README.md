@@ -626,3 +626,17 @@ See [docs/API.md](docs/API.md), [docs/RECIPES.md](docs/RECIPES.md),
 The security review is in [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), and the
 evidence-backed release audit is in [docs/COMPLETENESS.md](docs/COMPLETENESS.md).
 The requirement-by-requirement status is tracked in [docs/COMPLETENESS.md](docs/COMPLETENESS.md).
+
+## Company container image
+
+The maintained container is published under the company account and linked to
+[`zadstack/uaemcp`](https://github.com/zadstack/uaemcp).
+
+```sh
+docker pull ghcr.io/zadstack/uaemcp:latest
+```
+
+Use the **publish-container** workflow to publish the current source.
+`latest` tracks the latest manual publication; immutable `sha-…` tags identify
+the source commit. Historical packages in the old personal namespace are not
+the maintained installation target. Publishing does not change repository visibility.

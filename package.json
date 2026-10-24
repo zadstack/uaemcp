@@ -1,14 +1,14 @@
 {
   "name": "uaemcp",
   "version": "1.85.0",
-  "description": "Open Emirates Intelligence on Bun — official UAE open data over MCP.",
+  "description": "Open Emirates Intelligence on Bun \u2014 official UAE open data over MCP.",
   "author": "Ahmed Morsy <vacrom414@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zad-tools/uaemcp.git"
+    "url": "git+https://github.com/zadstack/uaemcp.git"
   },
   "homepage": "https://uaemcp.zad.tools",
-  "bugs": "https://github.com/zad-tools/uaemcp/issues",
+  "bugs": "https://github.com/zadstack/uaemcp/issues",
   "license": "MIT",
   "type": "module",
   "workspaces": [
@@ -73,8 +73,7 @@
     "@modelcontextprotocol/sdk": "1.32.1",
     "fflate": "0.8.3",
     "ipaddr.js": "2.5.0",
-    "zod": "3.25.76",
-    "zod-to-json-schema": "3.25.2"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@mapbox/vector-tile": "3.0.0",
@@ -93,6 +92,8 @@
     "fast-uri": "3.1.9",
     "ip-address": "10.7.4",
     "proxy-addr": "2.0.8",
-    "qs": "6.16.1"
+    "qs": "6.16.1",
+    "zod": "4.6.7",
+    "body-parser": "2.4.0"
   }
 }

@@ -1,4 +1,4 @@
-import { zodToJsonSchema } from "zod-to-json-schema";
+import { z } from "zod";
 
 export type ToolKind = "read" | "write" | "mixed";
 type JsonSchema = Record<string, unknown>;
@@ -81,8 +81,8 @@ export function createToolCatalog(registeredTools: Record<string, RegisteredTool
   const tools = Object.entries(registeredTools).map(([name, definition]): ToolCatalogEntry => {
     const description = definition.description?.trim() ?? "";
     const kind: ToolKind = name === "uae_dataset_snapshot" ? "mixed" : description.startsWith("[WRITE") || name === "uae_source_add" || name === "uae_source_add_metadata" ? "write" : "read";
-    const inputSchema = definition.inputSchema && !(definition.inputSchema as { _zod?: unknown })._zod
-      ? zodToJsonSchema(definition.inputSchema as never, { target: "jsonSchema7", $refStrategy: "none" }) as JsonSchema
+    const inputSchema = definition.inputSchema instanceof z.ZodType
+      ? z.toJSONSchema(definition.inputSchema, { target: "draft-07", io: "input" }) as JsonSchema
       : { type: "object", properties: {}, additionalProperties: false };
     const requiresAuth = kind !== "read";
     return {
