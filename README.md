@@ -626,3 +626,24 @@ See [docs/API.md](docs/API.md), [docs/RECIPES.md](docs/RECIPES.md),
 The security review is in [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), and the
 evidence-backed release audit is in [docs/COMPLETENESS.md](docs/COMPLETENESS.md).
 The requirement-by-requirement status is tracked in [docs/COMPLETENESS.md](docs/COMPLETENESS.md).
+
+## Existing GitHub Container package
+
+The original container package remains at `ghcr.io/ahmedvnabil/open-emirates-intelligence-mcp`,
+while its maintained source is now [`zadstack/uaemcp`](https://github.com/zadstack/uaemcp).
+Its visibility remains **public**. Existing version tags are preserved.
+
+```sh
+docker pull ghcr.io/ahmedvnabil/open-emirates-intelligence-mcp:latest
+```
+
+The manually triggered **Refresh existing GHCR package** workflow validates
+the current source and publishes `latest` plus an immutable `sha-<full-commit>`
+tag to this same package. It labels the image with the current repository URL.
+For reproducible installations, use that SHA tag instead of `latest`.
+
+The workflow needs a repository secret named `GHCR_COMPAT_TOKEN`, containing
+a classic token for the package owner with `read:packages` and `write:packages`.
+The moved repository's default `GITHUB_TOKEN` cannot by itself publish to the
+original personal-account namespace. The workflow verifies the existing package
+is public before publishing; it never changes package visibility.
