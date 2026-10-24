@@ -637,9 +637,9 @@ docker pull ghcr.io/zadstack/uaemcp:latest
 ```
 
 Use the **publish-container** workflow to publish the current source.
-`latest` tracks the latest manual publication; immutable `sha-…` tags identify
-the source commit. Historical packages in the old personal namespace are not
-the maintained installation target. Publishing does not change repository visibility.
+`latest` tracks stable releases and manual snapshots; `sha-…` tags identify
+the source commit. The old personal-account packages have been removed; use
+the company installation URL above. Publishing does not change repository visibility.
 
 ### Versioned updates
 
