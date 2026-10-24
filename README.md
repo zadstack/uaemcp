@@ -640,3 +640,9 @@ Use the **publish-container** workflow to publish the current source.
 `latest` tracks the latest manual publication; immutable `sha-…` tags identify
 the source commit. Historical packages in the old personal namespace are not
 the maintained installation target. Publishing does not change repository visibility.
+
+### Versioned updates
+
+See [container releases and migration](docs/container-releases.md) for numbered
+versions, automatic release publishing, runtime verification, and the updated
+company installation commands.
