@@ -1,7 +1,14 @@
 name: publish-container
 
 on:
+  release:
+    types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Optional numbered version; must match package.json (blank = snapshot)"
+        required: false
+        type: string
   push:
     branches: [main]
     tags: ["v*"]
@@ -13,7 +20,7 @@ permissions:
   attestations: write
 
 concurrency:
-  group: container-${{ github.ref }}
+  group: company-container-publication
   cancel-in-progress: false
 
 jobs:
@@ -30,6 +37,17 @@ jobs:
       # the image follows the org (ghcr.io/zadstack/uaemcp).
       - name: Resolve the image name
         run: echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/uaemcp" >> "$GITHUB_ENV"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - name: Validate source and release rules
+        run: |
+          node --test scripts/container-release.check.mjs
+          bun install --frozen-lockfile
+          bun run check
+      - name: Resolve release version
+        id: release
+        run: node scripts/container-release.mjs
       - uses: docker/setup-qemu-action@v4
       - uses: docker/setup-buildx-action@v4
       - uses: docker/login-action@v4
@@ -41,16 +59,27 @@ jobs:
         id: meta
         with:
           images: ${{ env.IMAGE_NAME }}
+          flavor: latest=false
           tags: |
             type=edge,branch=main
-            type=sha
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
+            type=semver,pattern={{version}},value=${{ steps.release.outputs.version }},enable=${{ steps.release.outputs.version != '' }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.release.outputs.version }},enable=${{ steps.release.outputs.stable == 'true' }}
+            type=sha,format=long
+            type=raw,value=latest,enable=${{ steps.release.outputs.latest == 'true' }}
           labels: |
             org.opencontainers.image.title=Open Emirates Intelligence MCP
             org.opencontainers.image.description=Official UAE open data over MCP and REST on Bun
             org.opencontainers.image.vendor=Open Emirates Intelligence
+      - name: Build runtime for pre-publication test
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64
+          load: true
+          push: false
+          tags: company-container:smoke
+      - name: Test runtime before publication
+        run: bash scripts/smoke-container.sh company-container:smoke bun 8080 /healthz
       - uses: docker/build-push-action@v7
         id: build
         with:
@@ -65,8 +94,7 @@ jobs:
           provenance: mode=max
       - name: Verify the published amd64 CLI
         run: |
-          short_sha=${GITHUB_SHA::7}
-          image="${IMAGE_NAME}:sha-${short_sha}"
+          image="${IMAGE_NAME}@${{ steps.build.outputs.digest }}"
           docker pull --platform linux/amd64 "$image"
           test "$(docker run --rm --platform linux/amd64 "$image" bun src/index.ts --version)" = "$(node -p "require('./package.json').version")"
       - uses: actions/attest-build-provenance@v4
@@ -78,3 +106,14 @@ jobs:
         run: |
           docker logout ghcr.io
           docker buildx imagetools inspect "${IMAGE_NAME}:${{ steps.meta.outputs.version }}"
+
+      - name: Verify public published runtime
+        env:
+          PUBLISHED_IMAGE: ${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+          EXPECTED_SOURCE: https://github.com/zadstack/uaemcp
+        run: |
+          docker logout ghcr.io
+          docker pull --platform linux/amd64 "$PUBLISHED_IMAGE"
+          source=$(docker image inspect --platform linux/amd64 "$PUBLISHED_IMAGE" --format '{{ index .Config.Labels "org.opencontainers.image.source" }}')
+          test "$source" = "$EXPECTED_SOURCE"
+          bash scripts/smoke-container.sh "$PUBLISHED_IMAGE" bun 8080 /healthz
