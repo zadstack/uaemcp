@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { z } from "zod";
 import { buildServer } from "../src/server.js";
 import { trustSummary } from "../src/manifest.js";
 import { createToolCatalog } from "../src/tool-catalog.js";
@@ -28,5 +29,20 @@ describe("generated MCP tool catalog", () => {
       sideEffects: true,
       authScopes: ["tools:write"],
     });
+  });
+});
+
+
+describe("Zod 4 input schema conversion", () => {
+  it("preserves required fields, input defaults, and strict object validation", () => {
+    const inputSchema = z.object({ query: z.string().min(1), limit: z.number().int().default(10) }).strict();
+    const catalog = createToolCatalog({ search: { description: "Search official source data", inputSchema } }, "test");
+    expect(catalog.tools[0]?.inputSchema).toMatchObject({
+      type: "object",
+      required: ["query"],
+      properties: { query: { type: "string", minLength: 1 }, limit: { type: "integer", default: 10 } },
+      additionalProperties: false,
+    });
+    expect(inputSchema.safeParse({ query: "Dubai", unexpected: true }).success).toBe(false);
   });
 });
