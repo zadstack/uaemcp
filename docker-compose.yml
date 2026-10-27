@@ -13,7 +13,10 @@ services:
       # Behind a reverse proxy the app sees the public Host header, so it must be
       # allow-listed or the /mcp endpoint returns 421 (DNS-rebinding protection).
       UAEMCP_ALLOWED_HOSTS: "uaemcp.zad.tools,uae-intelligence-mcp.zad.tools,127.0.0.1,127.0.0.1:8088,localhost"
-      UAEMCP_ALLOWED_ORIGINS: "https://uaemcp.zad.tools,https://uae-intelligence-mcp.zad.tools"
+      # Browser origins allowed to call the API cross-origin (CORS). Once this list is
+      # non-empty, any other Origin is rejected with 403 INVALID_ORIGIN, so keep the
+      # app's own origin and the static Maarad canvas (https://maarad.zadstack.com).
+      UAEMCP_ALLOWED_ORIGINS: "https://uaemcp.zad.tools,https://uae-intelligence-mcp.zad.tools,https://uae-open-data.zadstack.com,https://maarad.zadstack.com"
       UAEMCP_DATABASE_PATH: "/app/data/uaemcp.sqlite"
       UAEMCP_HEALTH_SCAN_INTERVAL_MINUTES: "60"
       UAEMCP_SNAPSHOT_INTERVAL_MINUTES: "1440"

@@ -7,8 +7,9 @@
 <p align="center"><strong>The Emirates, queryable.</strong></p>
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools"><img src="https://img.shields.io/badge/LIVE-uaemcp.zad.tools-087443?style=flat-square" alt="Live instance"></a>
-  <a href="https://github.com/zad-tools/uaemcp/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/zad-tools/uaemcp/ci.yml?style=flat-square&label=CI" alt="CI status"></a>
+  <a href="https://uae-open-data.zadstack.com/health"><img src="https://img.shields.io/badge/instance-uae--open--data.zadstack.com-087443?style=flat-square" alt="Configured instance — open its health endpoint to check availability"></a>
+  <a href="https://maarad.zadstack.com/c/uae-mcp/"><img src="https://img.shields.io/badge/STATIC-maarad.zadstack.com-173d2d?style=flat-square" alt="Static edition"></a>
+  <a href="https://github.com/zadstack/uaemcp/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/zadstack/uaemcp/ci.yml?style=flat-square&label=CI" alt="CI status"></a>
   <a href="https://www.npmjs.com/package/uaemcp"><img src="https://img.shields.io/npm/v/uaemcp?style=flat-square&logo=npm" alt="npm version"></a>
   <img src="https://img.shields.io/badge/runtime-Bun-f1eddf?style=flat-square&logo=bun&logoColor=13251d" alt="Bun runtime">
   <img src="https://img.shields.io/badge/license-MIT-c34032?style=flat-square" alt="MIT license">
@@ -27,7 +28,7 @@
 <table>
   <tr>
     <td width="68%"><img src="docs/assets/screenshots/landing-desktop.jpg" alt="Desktop landing page"></td>
-    <td width="32%"><img src="docs/assets/screenshots/landing-mobile.png" alt="Mobile landing page"></td>
+    <td width="32%"><img src="docs/assets/screenshots/landing-mobile.jpg" alt="Mobile landing page"></td>
   </tr>
 </table>
 
@@ -45,6 +46,18 @@ original open-source UAEMCP work credited in [LICENSE](LICENSE).
 Open Emirates is an independent open-source initiative. It is not affiliated
 with or endorsed by the UAE Government. Every data product identifies its
 official source, evidence boundary, retrieval date and available licence terms.
+
+## Live instances
+
+| Instance | URL | What it serves |
+| --- | --- | --- |
+| Cloudflare Worker (production) | [uae-open-data.zadstack.com](https://uae-open-data.zadstack.com/) | Every public page, REST `/api/v1/*`, MCP at [`/mcp`](https://uae-open-data.zadstack.com/mcp) (requires `X-API-Key`), liveness at [`/health`](https://uae-open-data.zadstack.com/health), contract at [`/openapi.json`](https://uae-open-data.zadstack.com/openapi.json) |
+| Static edition (Maarad canvas) | [maarad.zadstack.com/c/uae-mcp](https://maarad.zadstack.com/c/uae-mcp/) | A static export of all 27 public pages with retained JSON snapshots; filters, forms and the MCP console call the Worker live |
+
+The static edition is read-only and rebuilt from this repository. Its retained
+snapshots carry the retrieval time of the export; anything fresher, and every
+`POST`, is fetched from the Worker, which allows the canvas origin through
+`UAEMCP_ALLOWED_ORIGINS`.
 
 ## Independent packages
 
@@ -95,7 +108,7 @@ between English and Arabic. Every public application uses Dubai Font with native
 RTL composition.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/employment-gender"><img src="docs/assets/employment-gender-motion.svg" alt="Animated MOHRE employment-by-gender evidence ledger preserving annual ratios and interpretation boundaries" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/employment-gender"><img src="docs/assets/employment-gender-motion.svg" alt="Animated MOHRE employment-by-gender evidence ledger preserving annual ratios and interpretation boundaries" width="100%"></a>
 </p>
 
 The **MOHRE Employment by Gender** ledger publishes ten validated annual ratio
@@ -103,11 +116,11 @@ observations for employees registered in MOHRE private-sector systems from
 2020–2024. It keeps male and female shares separate, never converts ratios into
 employee counts, and does not claim whole-workforce coverage, pay equity,
 causality or forecasts. Use the
-[hosted ledger](https://uaemcp.zad.tools/employment-gender),
+[hosted ledger](https://uae-open-data.zadstack.com/employment-gender),
 `GET /api/v1/employment-gender`, or the `uae_employment_gender` MCP tool.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/tourism-pulse"><img src="docs/assets/tourism-pulse-motion.svg" alt="Animated UAE Tourism Pulse showing five separate national annual aggregates and explicit evidence boundaries" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/tourism-pulse"><img src="docs/assets/tourism-pulse-motion.svg" alt="Animated UAE Tourism Pulse showing five separate national annual aggregates and explicit evidence boundaries" width="100%"></a>
 </p>
 
 The **UAE Tourism Pulse** presents five official national annual aggregates as
@@ -116,11 +129,11 @@ are not presented as unique tourists, year-to-year movement is descriptive—not
 causal—and occupancy is transparently displayed as a percentage by multiplying
 the published source fraction by 100. It does not create a tourism score or
 infer emirate, hotel, traveller or market-segment detail. Use the
-[hosted pulse](https://uaemcp.zad.tools/tourism-pulse),
+[hosted pulse](https://uae-open-data.zadstack.com/tourism-pulse),
 `GET /api/v1/tourism-pulse`, or the `uae_tourism_pulse` MCP tool.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/aeronautical-publications"><img src="docs/assets/aeronautical-publications-motion.svg" alt="Animated GCAA aeronautical publication ledger showing package, publication and effective dates with an index-not-NOTAM boundary" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/aeronautical-publications"><img src="docs/assets/aeronautical-publications-motion.svg" alt="Animated GCAA aeronautical publication ledger showing package, publication and effective dates with an index-not-NOTAM boundary" width="100%"></a>
 </p>
 
 The **UAE Aeronautical Publications** ledger reads the current GCAA eAIP
@@ -129,12 +142,12 @@ its source description. AIRAC amendments and supplements can be filtered
 without interpreting regulatory effect, airspace, routes or safety. This is a
 discovery index—not NOTAM, flight-planning guidance or a substitute for the
 current official AIP package. Use the
-[hosted ledger](https://uaemcp.zad.tools/aeronautical-publications),
+[hosted ledger](https://uae-open-data.zadstack.com/aeronautical-publications),
 `GET /api/v1/aeronautical-publications`, or the
 `uae_aeronautical_publications` MCP tool.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/health-facilities-map"><img src="docs/assets/health-facilities-map-motion.svg" alt="Animated MOHAP Health Facilities Map showing published rows, valid coordinates and explicit exclusions" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/health-facilities-map"><img src="docs/assets/health-facilities-map-motion.svg" alt="Animated MOHAP Health Facilities Map showing published rows, valid coordinates and explicit exclusions" width="100%"></a>
 </p>
 
 The **UAE Health Facilities Map** exposes the second GIS sheet in MOHAP's
@@ -144,11 +157,11 @@ coordinates inside a conservative UAE frame. It reports and excludes the other
 or out-of-frame values—instead of guessing locations. Names and coordinates do
 not establish facility type, licence, ownership, current operation, services,
 capacity, accessibility or quality. Use the
-[hosted map](https://uaemcp.zad.tools/health-facilities-map),
+[hosted map](https://uae-open-data.zadstack.com/health-facilities-map),
 `GET /api/v1/health-facilities-map`, or `uae_health_facilities_map`.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/connectivity"><img src="docs/assets/connectivity-pulse-motion.svg" alt="Animated TDRA Connectivity Pulse with three separate official monthly series" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/connectivity"><img src="docs/assets/connectivity-pulse-motion.svg" alt="Animated TDRA Connectivity Pulse with three separate official monthly series" width="100%"></a>
 </p>
 
 The **UAE Connectivity Pulse** publishes three separate official TDRA monthly
@@ -157,11 +170,11 @@ broadband internet subscriptions per 100 inhabitants, and fixed lines per 100
 inhabitants. It does not add unlike units or create a connectivity score.
 Subscriptions are not unique people, and per-100 observations do not measure
 coverage, speed, quality, affordability or digital inclusion. Use the
-[hosted ledger](https://uaemcp.zad.tools/connectivity), REST, or the
+[hosted ledger](https://uae-open-data.zadstack.com/connectivity), REST, or the
 `uae_connectivity_pulse` MCP tool.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/ajman-parks"><img src="docs/assets/ajman-parks-motion.svg" alt="Animated Ajman Parks Footfall annual evidence with visits-not-unique-people boundary" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/ajman-parks"><img src="docs/assets/ajman-parks-motion.svg" alt="Animated Ajman Parks Footfall annual evidence with visits-not-unique-people boundary" width="100%"></a>
 </p>
 
 The **Ajman Parks Footfall** product reads the complete official 2017–2023
@@ -169,11 +182,11 @@ monthly observation dataset, groups valid published visits by year and
 source-native park label, and exposes malformed exclusions. Visits are never
 presented as unique people, resident demand, tourism performance, satisfaction,
 capacity or park quality. Use the
-[hosted explorer](https://uaemcp.zad.tools/ajman-parks), REST, or the
+[hosted explorer](https://uae-open-data.zadstack.com/ajman-parks), REST, or the
 `uae_ajman_parks_footfall` MCP tool.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/policy-watch"><img src="docs/assets/policy-watch-motion.svg" alt="Animated UAE Policy Evidence Watch from five official sources to hashes and an evidence change ledger" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/policy-watch"><img src="docs/assets/policy-watch-motion.svg" alt="Animated UAE Policy Evidence Watch from five official sources to hashes and an evidence change ledger" width="100%"></a>
 </p>
 
 The **UAE Policy Evidence Watch** checks five audited official legislation,
@@ -181,34 +194,34 @@ resolution and announcement surfaces. It retains SHA-256 fingerprints, bounded
 excerpts and check observations—not full government pages. A detected page
 content change is evidence for review; it is never presented as a legal change,
 effective date or eligibility decision. Use the
-[hosted watch](https://uaemcp.zad.tools/policy-watch), REST, or the
+[hosted watch](https://uae-open-data.zadstack.com/policy-watch), REST, or the
 `uae_policy_evidence_watch` MCP tool.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/evidence-studio"><img src="docs/assets/evidence-studio-motion.svg" alt="Animated UAE Evidence Studio composing source-native evidence into one dossier" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/evidence-studio"><img src="docs/assets/evidence-studio-motion.svg" alt="Animated UAE Evidence Studio composing source-native evidence into one dossier" width="100%"></a>
 </p>
 
 The **UAE Evidence Studio** turns two to five existing official evidence pillars
 into one bilingual research dossier. Every card keeps its period, unit, scope,
 delivery mode, citation and limitations. It uses no generative model, stores no
 question or selection, and never adds unlike units, ranks pillars or invents a
-composite score. Use the [hosted studio](https://uaemcp.zad.tools/evidence-studio),
+composite score. Use the [hosted studio](https://uae-open-data.zadstack.com/evidence-studio),
 `POST /api/v1/evidence-dossier`, or the `uae_evidence_dossier` MCP tool; print or
 download Markdown and JSON locally in the browser.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/national-brief"><img src="docs/assets/national-brief-motion.svg" alt="Animated UAE National Evidence Brief showing four separate source-cited pillars" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/national-brief"><img src="docs/assets/national-brief-motion.svg" alt="Animated UAE National Evidence Brief showing four separate source-cited pillars" width="100%"></a>
 </p>
 
 The **UAE National Evidence Brief** brings education, health, industry and FTA
 service activity into one evidence surface while keeping each source's original
 period, unit and limitations. It never adds the pillars together, ranks them or
-invents a composite national score. Use the [hosted page](https://uaemcp.zad.tools/national-brief),
+invents a composite national score. Use the [hosted page](https://uae-open-data.zadstack.com/national-brief),
 the REST endpoint, or the `uae_national_evidence_brief` MCP tool. See the
 [MCP client setup guide](docs/MCP_CLIENTS.md) for tested connection patterns.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/health-facilities"><img src="docs/assets/health-facilities-motion.svg" alt="Animated UAE Health Facilities Atlas showing official aggregate counts from 2015 to 2024" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/health-facilities"><img src="docs/assets/health-facilities-motion.svg" alt="Animated UAE Health Facilities Atlas showing official aggregate counts from 2015 to 2024" width="100%"></a>
 </p>
 
 The **UAE Health Facilities Atlas** exposes 950 official MOHAP aggregate rows
@@ -216,11 +229,11 @@ covering 2015–2024, all seven emirates, government/private sectors and 42 raw
 facility-type labels. The default 2024 slice contains 120 rows and a reported
 count of 7,392. These are not individual facility locations, beds, capacity,
 workforce, accessibility or quality measurements. Use the
-[hosted atlas](https://uaemcp.zad.tools/health-facilities), REST, or
+[hosted atlas](https://uae-open-data.zadstack.com/health-facilities), REST, or
 `uae_health_facilities_atlas`.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/founder-pathway"><img src="docs/assets/founder-pathway.svg" alt="Animated UAE Founder Pathway from official setup to support and residency readiness" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/founder-pathway"><img src="docs/assets/founder-pathway.svg" alt="Animated UAE Founder Pathway from official setup to support and residency readiness" width="100%"></a>
 </p>
 
 The **UAE Founder Pathway** composes three evidence products into one ordered,
@@ -232,11 +245,11 @@ checklist state to the server. It is planning—not licensing, programme accepta
 or an eligibility decision.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/business-setup"><img src="docs/assets/business-routing.svg" alt="Animated UAE Business Setup Navigator routing across seven emirates" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/business-setup"><img src="docs/assets/business-routing.svg" alt="Animated UAE Business Setup Navigator routing across seven emirates" width="100%"></a>
 </p>
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/startup-support"><img src="docs/assets/startup-support.svg" alt="Animated UAE Startup Support Navigator matching official programmes by stage, support need and emirate" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/startup-support"><img src="docs/assets/startup-support.svg" alt="Animated UAE Startup Support Navigator matching official programmes by stage, support need and emirate" width="100%"></a>
 </p>
 
 The **UAE Startup Support Navigator** matches a founder's current stage, support
@@ -251,7 +264,7 @@ does not collect names, phone numbers, emails or passport data, and never
 pretends to choose a licence, calculate final fees or guarantee approval.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/ajman-business"><img src="docs/assets/ajman-business-motion.svg" alt="Animated Ajman Business Evidence explorer with three separate official dataset views" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/ajman-business"><img src="docs/assets/ajman-business-motion.svg" alt="Animated Ajman Business Evidence explorer with three separate official dataset views" width="100%"></a>
 </p>
 
 The **Ajman Business Evidence Explorer** turns three large official open-data
@@ -260,7 +273,7 @@ status. It keeps every dataset separate: sampled rows are not added together as
 unique companies, market size, survival or investment performance.
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/ajman-urban"><img src="docs/assets/ajman-urban-motion.svg" alt="Animated Ajman Urban Evidence series for buildings, rent contracts, roads and crossroads" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/ajman-urban"><img src="docs/assets/ajman-urban-motion.svg" alt="Animated Ajman Urban Evidence series for buildings, rent contracts, roads and crossroads" width="100%"></a>
 </p>
 
 The **Ajman Urban Evidence Explorer** publishes bounded observations from six official building, certified
@@ -275,7 +288,8 @@ claim.
   "mcpServers": {
     "uae-intelligence": {
       "type": "http",
-      "url": "https://uaemcp.zad.tools/mcp"
+      "url": "https://uae-open-data.zadstack.com/mcp",
+      "headers": { "X-API-Key": "oe_…" }
     }
   }
 }
@@ -283,8 +297,8 @@ claim.
 
 ### Open Emirates Pro (hosted plan)
 
-The public endpoint above is free with a per-IP rate limit — it always stays that
-way. **Open Emirates Pro** adds a personal API key with a metered monthly quota
+The hosted `/mcp` endpoint requires an API key; the public REST routes under
+`/api/v1` stay free with a per-IP rate limit — they always stay that way. **Open Emirates Pro** adds a personal API key with a metered monthly quota
 (10,000 calls/month) and no per-IP throttling, for agents and applications in
 production. The code stays MIT: self-hosting always remains free and unmetered.
 
@@ -341,7 +355,7 @@ Registry with an SBOM and build provenance:
 ```bash
 docker run --rm -p 127.0.0.1:8080:8080 \
   -e UAEMCP_ALLOWED_HOSTS=127.0.0.1,localhost \
-  ghcr.io/zad-tools/uaemcp:edge
+  ghcr.io/zadstack/uaemcp:edge
 ```
 
 Or use the hardened registry Compose file with a persistent SQLite volume,
@@ -396,53 +410,53 @@ Endpoints:
 - UAE Golden Residency Navigator: `GET /golden-residency` — 14 official routes with direct category pages at ICP/GDRFA/ADRO, federal-vs-local criteria warnings and a printable non-identifying readiness dossier
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/golden-residency"><img src="docs/assets/golden-routing.svg" alt="Animated privacy-first Golden Residency routing to ICP, GDRFA Dubai and Abu Dhabi Residents Office" width="920"></a>
+  <a href="https://uae-open-data.zadstack.com/golden-residency"><img src="docs/assets/golden-routing.svg" alt="Animated privacy-first Golden Residency routing to ICP, GDRFA Dubai and Abu Dhabi Residents Office" width="920"></a>
 </p>
 - Industrial Change Monitor: `GET /api/v1/industry-atlas/change` — compares the two latest different retained samples; unchanged checks are deduplicated and sample movement is never described as economic growth
 
 <table>
   <tr>
-    <td width="68%"><a href="https://uaemcp.zad.tools/golden-residency"><img src="docs/assets/screenshots/golden-residency.jpg" alt="UAE Golden Residency Navigator official pathway dossier"></a></td>
-    <td width="32%"><a href="https://uaemcp.zad.tools/golden-residency"><img src="docs/assets/screenshots/golden-residency-mobile.png" alt="UAE Golden Residency Navigator mobile interface using Dubai Font"></a></td>
+    <td width="68%"><a href="https://uae-open-data.zadstack.com/golden-residency"><img src="docs/assets/screenshots/golden-residency.jpg" alt="UAE Golden Residency Navigator official pathway dossier"></a></td>
+    <td width="32%"><a href="https://uae-open-data.zadstack.com/golden-residency"><img src="docs/assets/screenshots/golden-residency-mobile.png" alt="UAE Golden Residency Navigator mobile interface using Dubai Font"></a></td>
   </tr>
 </table>
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/education"><img src="docs/assets/screenshots/education-ledger.png" alt="UAE Education Ledger with accredited FCSC totals and Ministry of Education resource catalogue" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/education"><img src="docs/assets/screenshots/education-ledger.png" alt="UAE Education Ledger with accredited FCSC totals and Ministry of Education resource catalogue" width="100%"></a>
 </p>
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/health-indicators"><img src="docs/assets/screenshots/health-indicators.jpg" alt="UAE Health Indicators evidence ledger using Dubai Font" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/health-indicators"><img src="docs/assets/screenshots/health-indicators.jpg" alt="UAE Health Indicators evidence ledger using Dubai Font" width="100%"></a>
 </p>
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/observatory"><img src="docs/assets/screenshots/observatory.png" alt="Emirates Open Data Observatory" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/observatory"><img src="docs/assets/screenshots/observatory.jpg" alt="Emirates Open Data Observatory" width="100%"></a>
 </p>
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/industry-atlas"><img src="docs/assets/screenshots/industry-atlas.png" alt="UAE Industry Atlas" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/industry-atlas"><img src="docs/assets/screenshots/industry-atlas.png" alt="UAE Industry Atlas" width="100%"></a>
 </p>
 
 <table>
   <tr>
-    <td width="55%"><a href="https://uaemcp.zad.tools/trade-flow"><img src="docs/assets/screenshots/trade-flow-radar.jpg" alt="UAE Trade Flow Radar"></a></td>
-    <td width="45%"><a href="https://uaemcp.zad.tools/trade-flow"><img src="docs/assets/screenshots/trade-flow-data.jpg" alt="UAE Trade Flow Radar data view"></a></td>
+    <td width="55%"><a href="https://uae-open-data.zadstack.com/trade-flow"><img src="docs/assets/screenshots/trade-flow-radar.jpg" alt="UAE Trade Flow Radar"></a></td>
+    <td width="45%"><a href="https://uae-open-data.zadstack.com/trade-flow"><img src="docs/assets/screenshots/trade-flow-data.jpg" alt="UAE Trade Flow Radar data view"></a></td>
   </tr>
 </table>
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/tax-services"><img src="docs/assets/screenshots/tax-service-activity.png" alt="UAE Tax Service Activity 2025" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/tax-services"><img src="docs/assets/screenshots/tax-service-activity.png" alt="UAE Tax Service Activity 2025" width="100%"></a>
 </p>
 
 <table>
   <tr>
-    <td width="58%"><a href="https://uaemcp.zad.tools/tax-services/archive"><img src="docs/assets/screenshots/fta-archive-explorer.jpg" alt="FTA Archive Explorer hero"></a></td>
-    <td width="42%"><a href="https://uaemcp.zad.tools/tax-services/archive"><img src="docs/assets/screenshots/fta-archive-data.jpg" alt="FTA Archive Explorer source-native data view"></a></td>
+    <td width="58%"><a href="https://uae-open-data.zadstack.com/tax-services/archive"><img src="docs/assets/screenshots/fta-archive-explorer.jpg" alt="FTA Archive Explorer hero"></a></td>
+    <td width="42%"><a href="https://uae-open-data.zadstack.com/tax-services/archive"><img src="docs/assets/screenshots/fta-archive-data.jpg" alt="FTA Archive Explorer source-native data view"></a></td>
   </tr>
 </table>
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/places"><img src="docs/assets/screenshots/place-names.png" alt="UAE Place Names Explorer" width="100%"></a>
+  <a href="https://uae-open-data.zadstack.com/places"><img src="docs/assets/screenshots/place-names.png" alt="UAE Place Names Explorer" width="100%"></a>
 </p>
 
 ## MCP client configuration
@@ -500,7 +514,7 @@ server:
 - [Readable catalogue](docs/MCP_TOOLS.md)
 - [Machine-readable catalogue](docs/mcp-tools.json)
 - MCP resource: `uae://tools`
-- [Public bilingual MCP Developer Console](https://uaemcp.zad.tools/tools) (also `/mcp/tools`) with schemas, examples, safe Try-it and client configuration
+- [Public bilingual MCP Developer Console](https://uae-open-data.zadstack.com/tools) (also `/mcp/tools`) with schemas, examples, safe Try-it and client configuration
 - REST contracts: `GET /api/v1/tools` · `GET /api/v1/tools/{toolName}` · `POST /api/v1/tools/{toolName}/call`
 
 ```bash
@@ -539,11 +553,11 @@ bilingual UAE place names and coordinates through ArcGIS while omitting a known
 placeholder English-description field and retaining FGIC's informational-use disclaimer:
 
 <p align="center">
-  <a href="https://uaemcp.zad.tools/places"><img src="docs/assets/place-names-motion.svg" alt="Animated bilingual UAE National Gazetteer search and mapping" width="920"></a>
+  <a href="https://uae-open-data.zadstack.com/places"><img src="docs/assets/place-names-motion.svg" alt="Animated bilingual UAE National Gazetteer search and mapping" width="920"></a>
 </p>
 
 ```bash
-curl 'https://uaemcp.zad.tools/api/v1/places?q=%D8%AF%D8%A8%D9%8A&limit=5'
+curl 'https://uae-open-data.zadstack.com/api/v1/places?q=%D8%AF%D8%A8%D9%8A&limit=5'
 ```
 
 Tool results use `{ ok, data, error, meta }`. Data responses include source,
@@ -612,3 +626,23 @@ See [docs/API.md](docs/API.md), [docs/RECIPES.md](docs/RECIPES.md),
 The security review is in [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), and the
 evidence-backed release audit is in [docs/COMPLETENESS.md](docs/COMPLETENESS.md).
 The requirement-by-requirement status is tracked in [docs/COMPLETENESS.md](docs/COMPLETENESS.md).
+
+## Company container image
+
+The maintained container is published under the company account and linked to
+[`zadstack/uaemcp`](https://github.com/zadstack/uaemcp).
+
+```sh
+docker pull ghcr.io/zadstack/uaemcp:latest
+```
+
+Use the **publish-container** workflow to publish the current source.
+`latest` tracks stable releases and manual snapshots; `sha-…` tags identify
+the source commit. The old personal-account packages have been removed; use
+the company installation URL above. Publishing does not change repository visibility.
+
+### Versioned updates
+
+See [container releases and migration](docs/container-releases.md) for numbered
+versions, automatic release publishing, runtime verification, and the updated
+company installation commands.

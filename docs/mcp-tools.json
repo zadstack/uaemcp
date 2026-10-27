@@ -1,6 +1,6 @@
 {
   "schemaVersion": "2.1",
-  "serverVersion": "1.84.0",
+  "serverVersion": "1.85.0",
   "generatedFrom": "runtime_registered_tools",
   "summary": {
     "total": 46,
@@ -15,6 +15,7 @@
       "kind": "read",
       "description": "List current GCAA eAIP publication-index entries and their source-native dates. Discovery only: not NOTAM, flight-planning data, operational guidance, regulatory interpretation, or a substitute for the current official AIP package.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "kind": {
@@ -26,14 +27,13 @@
             ]
           },
           "limit": {
+            "default": 25,
             "type": "integer",
             "minimum": 1,
-            "maximum": 50,
-            "default": 25
+            "maximum": 50
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -105,6 +105,7 @@
       "kind": "read",
       "description": "Explore three distinct official Ajman business-license dataset samples by activity, area, legal form, license type and published status. Samples are not unique-company counts, market size or investment advice.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "query": {
@@ -112,14 +113,13 @@
             "maxLength": 100
           },
           "limit": {
+            "default": 500,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 500
+            "maximum": 1000
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -191,10 +191,10 @@
       "kind": "read",
       "description": "Read official Ajman monthly park-visit observations by year and source-native park label. Visit counts are not unique people, resident demand, tourism performance, satisfaction, capacity or park quality.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -264,17 +264,17 @@
       "kind": "read",
       "description": "Read six distinct official Ajman building, certified-rent and road datasets as source-native annual series. Measures remain separate and are not a property index, investment return or growth score.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 100
+            "maximum": 100
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -346,6 +346,7 @@
       "kind": "read",
       "description": "Agent-first analysis facade for methodology-backed indicators, reusable recipes and source-separated evidence dossiers. It never creates a composite score or unsupported narrative.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
@@ -388,18 +389,20 @@
             "maxLength": 200
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100
+            "maximum": 1000
           },
           "from_snapshot": {
             "type": "integer",
-            "exclusiveMinimum": 0
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
           },
           "to_snapshot": {
             "type": "integer",
-            "exclusiveMinimum": 0
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
           },
           "template": {
             "type": "string",
@@ -415,14 +418,16 @@
             "maxLength": 200
           },
           "language": {
+            "default": "en",
             "type": "string",
             "enum": [
               "en",
               "ar"
-            ],
-            "default": "en"
+            ]
           },
           "pillars": {
+            "minItems": 2,
+            "maxItems": 5,
             "type": "array",
             "items": {
               "type": "string",
@@ -433,9 +438,7 @@
                 "industry",
                 "tax_activity"
               ]
-            },
-            "minItems": 2,
-            "maxItems": 5
+            }
           },
           "emirate": {
             "type": "string",
@@ -453,8 +456,7 @@
         "required": [
           "action"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -528,15 +530,16 @@
       "kind": "read",
       "description": "Route a founder to the competent official UAE business-setup authority by emirate and mainland/free-zone path. Read-only, informational, no intermediaries and no personal data stored.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
+            "default": "list",
             "type": "string",
             "enum": [
               "list",
               "route"
-            ],
-            "default": "list"
+            ]
           },
           "emirate": {
             "type": "string",
@@ -571,8 +574,7 @@
             ]
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -644,6 +646,7 @@
       "kind": "read",
       "description": "Read three separate official TDRA monthly connectivity series through December 2025: active mobile subscriptions, broadband subscriptions per 100 inhabitants and fixed lines per 100 inhabitants. Subscriptions are not unique people and the per-100 series do not measure coverage, speed, quality or affordability.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "series": {
@@ -656,15 +659,16 @@
           },
           "from": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
           },
           "to": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -734,10 +738,10 @@
       "kind": "read",
       "description": "Concurrent, cached health snapshot across all sources (fast, never stalls).",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -807,6 +811,7 @@
       "kind": "read",
       "description": "Inspect a live dataset schema before filtering or aggregation. Returns inferred types, examples, semantic meaning, nullability, uniqueness and sample statistics.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "source_id": {
@@ -816,17 +821,16 @@
             "type": "string"
           },
           "sample_size": {
+            "default": 50,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 50
+            "maximum": 100
           }
         },
         "required": [
           "source_id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -899,6 +903,7 @@
       "kind": "mixed",
       "description": "Create, list, or diff historical dataset snapshots. create is a protected write action; list and diff are open reads.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
@@ -916,18 +921,20 @@
             "type": "string"
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100
+            "maximum": 1000
           },
           "from_snapshot": {
             "type": "integer",
-            "exclusiveMinimum": 0
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
           },
           "to_snapshot": {
             "type": "integer",
-            "exclusiveMinimum": 0
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
           },
           "token": {
             "type": "string"
@@ -936,8 +943,7 @@
         "required": [
           "action"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -1012,17 +1018,18 @@
       "kind": "read",
       "description": "Agent-first discovery across the local source and public-product index. Live portal discovery is opt-in with deep=true, so ordinary search does not wait for upstream portals.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
+            "default": "search",
             "type": "string",
             "enum": [
               "search",
               "sources",
               "products",
               "datasets"
-            ],
-            "default": "search"
+            ]
           },
           "query": {
             "type": "string",
@@ -1032,23 +1039,23 @@
             "type": "string"
           },
           "deep": {
-            "type": "boolean",
-            "default": false
+            "default": false,
+            "type": "boolean"
           },
           "limit": {
+            "default": 20,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 20
+            "maximum": 100
           },
           "offset": {
+            "default": 0,
             "type": "integer",
             "minimum": 0,
-            "default": 0
+            "maximum": 9007199254740991
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -1123,10 +1130,10 @@
       "kind": "read",
       "description": "Read the accredited UAE 2023/2024 national education snapshot and the separate Ministry of Education 2018–2024 resource catalogue. Includes reconciliation checks, source SHA-256, methodology and limitations; it is not a live enrollment feed.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -1196,6 +1203,7 @@
       "kind": "read",
       "description": "Read official MOHRE annual male/female ratios for employees registered in private-sector systems from 2020–2024. Ratios are not employee counts or a total for all UAE employment.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "gender": {
@@ -1216,8 +1224,7 @@
             "maximum": 2024
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -1287,6 +1294,7 @@
       "kind": "read",
       "description": "Resolve matching entities across two bounded source samples using explicit bilingual-normalized exact field mappings.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "left_source": {
@@ -1296,18 +1304,18 @@
             "type": "string"
           },
           "left_fields": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1
+            }
           },
           "right_fields": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1
+            }
           },
           "left_dataset": {
             "type": "string"
@@ -1316,16 +1324,16 @@
             "type": "string"
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 100
+            "maximum": 200
           },
           "max_matches": {
+            "default": 500,
             "type": "integer",
             "minimum": 1,
-            "maximum": 5000,
-            "default": 500
+            "maximum": 5000
           }
         },
         "required": [
@@ -1334,8 +1342,7 @@
           "left_fields",
           "right_fields"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -1415,16 +1422,17 @@
       "kind": "read",
       "description": "Compose two to five official UAE evidence pillars into one bilingual, source-cited dossier. The question is transient and not persisted. Accepted pillar IDs: education, health_facilities, health_indicators, industry, tax_activity. Example: education plus health_facilities. Periods and units remain separate; unavailable evidence is explicit; no ranking or composite score is produced.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "template": {
+            "default": "research_dossier",
             "type": "string",
             "enum": [
               "evidence_brief",
               "research_dossier",
               "source_comparison"
-            ],
-            "default": "research_dossier"
+            ]
           },
           "question": {
             "type": "string",
@@ -1433,14 +1441,16 @@
             "description": "Transient research question used only for the current response; not persisted by Evidence Dossier."
           },
           "language": {
+            "default": "en",
             "type": "string",
             "enum": [
               "en",
               "ar"
-            ],
-            "default": "en"
+            ]
           },
           "pillars": {
+            "minItems": 2,
+            "maxItems": 5,
             "type": "array",
             "items": {
               "type": "string",
@@ -1451,9 +1461,7 @@
                 "industry",
                 "tax_activity"
               ]
-            },
-            "minItems": 2,
-            "maxItems": 5
+            }
           },
           "query": {
             "type": "string",
@@ -1472,30 +1480,29 @@
             ]
           },
           "healthFacilitiesLimit": {
+            "default": 50,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 50
+            "maximum": 200
           },
           "healthIndicatorsLimit": {
+            "default": 12,
             "type": "integer",
             "minimum": 1,
-            "maximum": 50,
-            "default": 12
+            "maximum": 50
           },
           "industryLimit": {
+            "default": 50,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 50
+            "maximum": 100
           }
         },
         "required": [
           "question",
           "pillars"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -1574,6 +1581,7 @@
       "kind": "read",
       "description": "Build one ordered, privacy-bounded UAE founder journey across official business setup, relevant government-backed startup support and entrepreneur Golden Residency readiness. Planning only; no application, eligibility decision or personal data storage.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "stage": {
@@ -1634,8 +1642,7 @@
           "setup_type",
           "support_type"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -1710,15 +1717,16 @@
       "kind": "read",
       "description": "Explore current official UAE Golden Residency pathways or assess non-identifying evidence readiness. Informational only: never determines eligibility, submits an application, stores personal data, or guarantees approval.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
+            "default": "list",
             "type": "string",
             "enum": [
               "list",
               "assess"
-            ],
-            "default": "list"
+            ]
           },
           "pathway": {
             "type": "string",
@@ -1820,8 +1828,7 @@
             "minimum": 0
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -1893,9 +1900,11 @@
       "kind": "read",
       "description": "Explore official MOHAP aggregate facility counts for 2015–2024 by emirate, sector, category and type. Rows are not individual facilities; results do not measure beds, capacity, access or quality.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "year": {
+            "default": "2024",
             "type": "string",
             "enum": [
               "2015",
@@ -1908,8 +1917,7 @@
               "2022",
               "2023",
               "2024"
-            ],
-            "default": "2024"
+            ]
           },
           "emirate": {
             "type": "string",
@@ -1943,14 +1951,13 @@
             "maxLength": 100
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 100
+            "maximum": 200
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2023,6 +2030,7 @@
       "kind": "read",
       "description": "Search and spatially filter the official MOHAP 2026 health-facility location workbook as privacy-bounded map features. Direct contact fields are removed; published and mappable row counts remain explicit, and missing locations are never treated as zero facilities.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "q": {
@@ -2039,14 +2047,13 @@
             "maxLength": 100
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 100
+            "maximum": 200
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2118,29 +2125,30 @@
       "kind": "read",
       "description": "Search official MOHAP health core indicator rows across published year columns. Returns a compact paginated payload by default; set compact=false for full raw series. Values remain source-native and generic quality flags identify scale shifts or relative outliers without normalization.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "query": {
             "type": "string"
           },
           "limit": {
+            "default": 12,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 12
+            "maximum": 200
           },
           "offset": {
+            "default": 0,
             "type": "integer",
             "minimum": 0,
-            "default": 0
+            "maximum": 9007199254740991
           },
           "compact": {
-            "type": "boolean",
-            "default": true
+            "default": true,
+            "type": "boolean"
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2214,6 +2222,7 @@
       "kind": "read",
       "description": "List or calculate a methodology-backed UAE data indicator with evidence, limitations and citations.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "indicator": {
@@ -2235,14 +2244,13 @@
             "type": "string"
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100
+            "maximum": 1000
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2314,15 +2322,16 @@
       "kind": "read",
       "description": "Build an evidence-backed UAE industrial-establishment atlas from a bounded official MOIAT sample. Counts are never presented as population totals without upstream coverage proof.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
+            "default": "atlas",
             "type": "string",
             "enum": [
               "atlas",
               "change"
-            ],
-            "default": "atlas"
+            ]
           },
           "emirate": {
             "type": "string"
@@ -2331,14 +2340,13 @@
             "type": "string"
           },
           "limit": {
+            "default": 500,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 500
+            "maximum": 1000
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2411,6 +2419,7 @@
       "kind": "read",
       "description": "Run an evidence-backed analytical recipe. Results include methodology, evidence, limitations and citations.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "recipe": {
@@ -2433,25 +2442,26 @@
             "type": "string"
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100
+            "maximum": 1000
           },
           "from_snapshot": {
             "type": "integer",
-            "exclusiveMinimum": 0
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
           },
           "to_snapshot": {
             "type": "integer",
-            "exclusiveMinimum": 0
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
           }
         },
         "required": [
           "recipe"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2524,21 +2534,21 @@
       "kind": "read",
       "description": "Build a source-backed market snapshot (counts by emirate/area/product).",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "topic": {
-            "type": "string",
-            "default": "industry"
+            "default": "industry",
+            "type": "string"
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 100
+            "maximum": 200
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2611,19 +2621,20 @@
       "kind": "read",
       "description": "Read education, health, industry and FTA service activity side by side with source-native units, periods, citations and explicit limitations. No composite score or cross-pillar ranking is produced.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "healthLimit": {
+            "default": 12,
             "type": "integer",
             "minimum": 1,
-            "maximum": 50,
-            "default": 12
+            "maximum": 50
           },
           "industryLimit": {
+            "default": 50,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 50
+            "maximum": 100
           },
           "emirate": {
             "type": "string",
@@ -2642,8 +2653,7 @@
             "maxLength": 100
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2716,29 +2726,29 @@
       "kind": "read",
       "description": "Read the UAE Open Data Observatory: national reliability report, derived incidents, or one source reliability profile. Uses stored observations and never triggers hidden upstream work.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
+            "default": "report",
             "type": "string",
             "enum": [
               "report",
               "incidents",
               "source"
-            ],
-            "default": "report"
+            ]
           },
           "source_id": {
             "type": "string"
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100
+            "maximum": 1000
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2811,6 +2821,7 @@
       "kind": "read",
       "description": "Search the official FGIC National Gazetteer for bilingual UAE place names and coordinates. Returns a bounded, normalized, source-cited evidence product; points are not an authoritative boundary reference.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "query": {
@@ -2819,17 +2830,16 @@
             "maxLength": 100
           },
           "limit": {
+            "default": 20,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 20
+            "maximum": 100
           }
         },
         "required": [
           "query"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -2902,17 +2912,20 @@
       "kind": "read",
       "description": "Read retained checks or run a bounded check across five audited official UAE legislation, tax, labour, residency and Cabinet pages. Detects published-page content changes only; it never determines legal effect, effective date or eligibility.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
+            "default": "report",
             "type": "string",
             "enum": [
               "report",
               "check"
-            ],
-            "default": "report"
+            ]
           },
           "source_ids": {
+            "minItems": 1,
+            "maxItems": 5,
             "type": "array",
             "items": {
               "type": "string",
@@ -2923,13 +2936,10 @@
                 "icp_policy_announcements",
                 "uae_cabinet_news"
               ]
-            },
-            "minItems": 1,
-            "maxItems": 5
+            }
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3001,10 +3011,10 @@
       "kind": "read",
       "description": "List the public Open Emirates Intelligence applications with bilingual descriptions, routes, official evidence scope and explicit limitations.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3074,6 +3084,7 @@
       "kind": "read",
       "description": "Agent-first query facade for source capabilities, records, schema, aggregation and geospatial output. Every result preserves the delegated source contract and citation.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
@@ -3096,20 +3107,22 @@
             "type": "string"
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100
+            "maximum": 1000
           },
           "offset": {
+            "default": 0,
             "type": "integer",
             "minimum": 0,
-            "default": 0
+            "maximum": 9007199254740991
           },
           "group_by": {
             "type": "string"
           },
           "metric": {
+            "default": "count",
             "type": "string",
             "enum": [
               "count",
@@ -3117,17 +3130,16 @@
               "avg",
               "min",
               "max"
-            ],
-            "default": "count"
+            ]
           },
           "value_field": {
             "type": "string"
           },
           "top": {
+            "default": 20,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 20
+            "maximum": 200
           },
           "bbox": {
             "type": "string"
@@ -3146,8 +3158,7 @@
           "action",
           "source_id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3223,27 +3234,27 @@
       "kind": "read",
       "description": "Federated bilingual (ar/en) search across the catalog. With deep=true it also searches each portal's live dataset catalogue.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "query": {
             "type": "string"
           },
           "limit": {
+            "default": 20,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 20
+            "maximum": 100
           },
           "deep": {
-            "type": "boolean",
-            "default": false
+            "default": false,
+            "type": "boolean"
           }
         },
         "required": [
           "query"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3317,6 +3328,7 @@
       "kind": "write",
       "description": "[WRITE — requires token] Register a custom source using a built-in or installed connector plugin.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "id": {
@@ -3335,8 +3347,8 @@
             "type": "string"
           },
           "kind": {
-            "type": "string",
-            "default": "metadata"
+            "default": "metadata",
+            "type": "string"
           },
           "endpoint": {
             "type": "string"
@@ -3361,15 +3373,22 @@
           },
           "default_params": {
             "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
             "additionalProperties": {}
           },
           "connector_config": {
             "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
             "additionalProperties": {}
           },
           "max_page_size": {
             "type": "integer",
-            "exclusiveMinimum": 0
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
           },
           "token": {
             "type": "string"
@@ -3382,8 +3401,7 @@
           "owner",
           "base_url"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3461,6 +3479,7 @@
       "kind": "write",
       "description": "[WRITE — requires token] Add a metadata-only source to the local registry.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "id": {
@@ -3498,8 +3517,7 @@
           "owner",
           "base_url"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3577,6 +3595,7 @@
       "kind": "read",
       "description": "Group records and reduce with count|sum|avg|min|max. group_by is a comma-separated list of fields (dotted paths allowed). A generalized uae_market_snapshot.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "source_id": {
@@ -3586,6 +3605,7 @@
             "type": "string"
           },
           "metric": {
+            "default": "count",
             "type": "string",
             "enum": [
               "count",
@@ -3593,8 +3613,7 @@
               "avg",
               "min",
               "max"
-            ],
-            "default": "count"
+            ]
           },
           "value_field": {
             "type": "string"
@@ -3606,24 +3625,23 @@
             "type": "string"
           },
           "limit": {
+            "default": 500,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 500
+            "maximum": 1000
           },
           "top": {
+            "default": 20,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 20
+            "maximum": 200
           }
         },
         "required": [
           "source_id",
           "group_by"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3699,6 +3717,7 @@
       "kind": "read",
       "description": "List the datasets inside a multi-dataset portal (CKAN/OpenDataSoft/ArcGIS). Use a returned id as `dataset` for uae_source_records.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "source_id": {
@@ -3708,22 +3727,22 @@
             "type": "string"
           },
           "limit": {
+            "default": 50,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 50
+            "maximum": 100
           },
           "offset": {
+            "default": 0,
             "type": "integer",
             "minimum": 0,
-            "default": 0
+            "maximum": 9007199254740991
           }
         },
         "required": [
           "source_id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3797,6 +3816,7 @@
       "kind": "read",
       "description": "Spatially-filtered records as GeoJSON — powers map apps. bbox='min_lon,min_lat,max_lon,max_lat'; near='lat,lon,radius_km'.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "source_id": {
@@ -3818,26 +3838,25 @@
             "type": "string"
           },
           "top": {
+            "default": 10,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 10
+            "maximum": 100
           },
           "query": {
             "type": "string"
           },
           "limit": {
+            "default": 500,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 500
+            "maximum": 1000
           }
         },
         "required": [
           "source_id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3911,6 +3930,7 @@
       "kind": "read",
       "description": "Get the full metadata for one source by id.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "source_id": {
@@ -3920,8 +3940,7 @@
         "required": [
           "source_id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -3993,6 +4012,7 @@
       "kind": "read",
       "description": "Run a live, timeout-bounded health probe for one source.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "source_id": {
@@ -4002,8 +4022,7 @@
         "required": [
           "source_id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -4075,6 +4094,7 @@
       "kind": "read",
       "description": "Fetch up to `limit` live, redacted, source-cited records. For multi-dataset portals pass `dataset` (from uae_source_datasets). Response meta carries provenance + a data-quality block.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "source_id": {
@@ -4084,25 +4104,25 @@
             "type": "string"
           },
           "limit": {
+            "default": 10,
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 10
+            "maximum": 100
           },
           "dataset": {
             "type": "string"
           },
           "offset": {
+            "default": 0,
             "type": "integer",
             "minimum": 0,
-            "default": 0
+            "maximum": 9007199254740991
           }
         },
         "required": [
           "source_id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -4176,10 +4196,10 @@
       "kind": "read",
       "description": "List every registered official UAE open-data source with its metadata.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -4249,6 +4269,7 @@
       "kind": "read",
       "description": "Join point records from two official sources when they fall within radius_km. Both samples and output are strictly bounded.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "left_source": {
@@ -4264,30 +4285,29 @@
             "type": "string"
           },
           "radius_km": {
+            "default": 1,
             "type": "number",
             "exclusiveMinimum": 0,
-            "maximum": 500,
-            "default": 1
+            "maximum": 500
           },
           "limit": {
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 100
+            "maximum": 200
           },
           "max_matches": {
+            "default": 500,
             "type": "integer",
             "minimum": 1,
-            "maximum": 2000,
-            "default": 500
+            "maximum": 2000
           }
         },
         "required": [
           "left_source",
           "right_source"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -4363,15 +4383,16 @@
       "kind": "read",
       "description": "Discover current official or government-backed UAE startup support programmes by stage, support need and emirate. Relevance only: never determines eligibility, funding approval or acceptance and stores no personal data.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "action": {
+            "default": "list",
             "type": "string",
             "enum": [
               "list",
               "match"
-            ],
-            "default": "list"
+            ]
           },
           "stage": {
             "type": "string",
@@ -4403,8 +4424,7 @@
             ]
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -4476,10 +4496,10 @@
       "kind": "read",
       "description": "Read the official FTA 2025 service-activity report with quarterly totals, methodology, limitations and citation. Counts are not tax revenue, taxpayers, companies, or economic growth.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -4549,10 +4569,10 @@
       "kind": "read",
       "description": "Read the official FTA source-native service workbooks for 2017–2022, 2024 and 2025. Cross-year comparison is deliberately unavailable because scopes and schemas differ and 2023 is missing.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -4622,6 +4642,7 @@
       "kind": "read",
       "description": "Read five separate official UAE Ministry of Economy and Tourism national annual hotel-sector series for 2014–2025. Values retain source-native units; guest arrivals are not necessarily unique tourists, and descriptive trends do not establish causality, profitability or future demand.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "metric": {
@@ -4645,8 +4666,7 @@
             "maximum": 2025
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",
@@ -4716,17 +4736,17 @@
       "kind": "read",
       "description": "Analyze bounded official Ajman 2023 certificate-of-origin export and re-export records. Returns destination, transport, HS-code, month and origin rankings with explicit sample coverage. Counts are not trade value or total UAE trade.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
           "limit": {
+            "default": 500,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 500
+            "maximum": 1000
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "additionalProperties": false
       },
       "outputSchema": {
         "type": "object",

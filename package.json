@@ -1,14 +1,14 @@
 {
   "name": "uaemcp",
   "version": "1.85.0",
-  "description": "Open Emirates Intelligence on Bun — official UAE open data over MCP.",
+  "description": "Open Emirates Intelligence on Bun \u2014 official UAE open data over MCP.",
   "author": "Ahmed Morsy <vacrom414@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zad-tools/uaemcp.git"
+    "url": "git+https://github.com/zadstack/uaemcp.git"
   },
   "homepage": "https://uaemcp.zad.tools",
-  "bugs": "https://github.com/zad-tools/uaemcp/issues",
+  "bugs": "https://github.com/zadstack/uaemcp/issues",
   "license": "MIT",
   "type": "module",
   "workspaces": [
@@ -55,23 +55,25 @@
     "build:packages": "bun x --bun tsc -p packages/contracts/tsconfig.build.json && bun x --bun tsc -p packages/sdk/tsconfig.build.json",
     "check:packages": "bun run build:packages && for package_dir in packages/contracts packages/sdk packages/mcp; do (cd \"$package_dir\" && bun pm pack --dry-run --ignore-scripts >/dev/null) || exit 1; done",
     "typecheck": "bun x --bun tsc --noEmit",
-    "check": "bun run check:security && bun run typecheck && bun run check:packages && bun run test && bun run check:tools && bun run check:sdks && bun run check:package",
+    "check": "bun run check:security && bun run typecheck && bun run check:packages && bun run test && bun run check:tools && bun run check:sdks && bun run check:brand-assets && bun run check:package",
     "check:security": "bun audit",
     "generate:sdks": "bun scripts/generate-sdks.ts",
     "check:sdks": "bun scripts/generate-sdks.ts --check",
+    "generate:brand-assets": "bun scripts/generate-brand-assets.ts",
+    "check:brand-assets": "bun scripts/generate-brand-assets.ts --check",
+    "export:static": "bun scripts/export-static.ts",
     "generate:tools": "bun scripts/generate-tool-catalog.ts",
     "check:tools": "bun scripts/generate-tool-catalog.ts --check",
     "check:package": "bun scripts/check-package.ts",
     "prepublishOnly": "bun run check && bun run benchmark"
   },
   "dependencies": {
-    "@maplibre/geojson-vt": "6.1.1",
+    "@maplibre/geojson-vt": "6.3.0",
     "@maplibre/vt-pbf": "4.3.2",
-    "@modelcontextprotocol/sdk": "1.30.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
     "fflate": "0.8.3",
     "ipaddr.js": "2.5.0",
-    "zod": "3.25.76",
-    "zod-to-json-schema": "3.25.2"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@mapbox/vector-tile": "3.0.0",
@@ -82,5 +84,16 @@
   },
   "engines": {
     "bun": ">=1.3.0"
+  },
+  "overrides": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "hono": "4.13.13",
+    "@hono/node-server": "1.19.15",
+    "fast-uri": "3.1.9",
+    "ip-address": "10.7.4",
+    "proxy-addr": "2.0.8",
+    "qs": "6.16.1",
+    "zod": "4.6.7",
+    "body-parser": "2.4.0"
   }
 }

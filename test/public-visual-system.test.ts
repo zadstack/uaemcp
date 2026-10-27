@@ -40,4 +40,28 @@ describe("public visual system", () => {
       expect(await response?.text()).toContain('data-design-system="oei-product-v1"');
     }
   });
+
+  it("ships the ledger layer, favicon links and the shared runtime once", () => {
+    const styled = applyPublicVisualSystem("<!doctype html><html><head></head><body></body></html>");
+    expect(styled).toContain('font-family:"IBM Plex Mono"');
+    expect(styled).toContain("html[dir=rtl] body,html[dir=rtl] body *{letter-spacing:0!important}");
+    expect(styled).toContain('<link rel="icon" type="image/svg+xml" href="/favicon.svg">');
+    expect(styled.match(/data-oei-runtime/g)?.length).toBe(1);
+    const runtime = styled.slice(styled.indexOf("<script data-oei-runtime>") + 25, styled.indexOf("</script>"));
+    expect(() => new Function(runtime)).not.toThrow();
+  });
+
+  it("serves the favicon and IBM Plex Mono from the server", async () => {
+    for (const [path, type] of [
+      ["/favicon.ico", "image/x-icon"],
+      ["/favicon.svg", "image/svg+xml"],
+      ["/assets/fonts/ibm-plex-mono-latin-400-normal.woff2", "font/woff2"],
+    ] as const) {
+      const response = await handleRest(new Request(`http://localhost${path}`));
+      expect(response?.status).toBe(200);
+      expect(response?.headers.get("content-type")).toBe(type);
+      expect((await response!.arrayBuffer()).byteLength).toBeGreaterThan(100);
+    }
+  });
 });
+

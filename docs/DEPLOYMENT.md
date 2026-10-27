@@ -4,7 +4,7 @@
 
 The `publish-container` workflow builds the same Dockerfile for `linux/amd64`
 and `linux/arm64`, publishes it to
-`ghcr.io/zad-tools/uaemcp`, attaches an SBOM and
+`ghcr.io/zadstack/uaemcp`, attaches an SBOM and
 maximum-mode provenance, then runs the published amd64 image to verify its CLI
 version. Use `compose.ghcr.yml` for a registry-backed self-host with a persistent
 data volume and reduced container privileges.
@@ -19,6 +19,74 @@ docker compose -f compose.ghcr.yml up -d
 
 Do not expose a write token unless mutating source or snapshot operations are
 required. Read tools remain available when writes are disabled.
+
+## Production Cloudflare Worker
+
+The production instance is the Cloudflare Worker `uaemcp` (account
+`zadstack-5brands`) served at <https://uae-open-data.zadstack.com>. Its build and
+`wrangler` configuration live outside this repository, so its variables are not
+derived from any file here and must be kept in step by hand. The values that the
+public surfaces depend on are:
+
+| Variable | Production value | Why |
+| --- | --- | --- |
+| `UAEMCP_ALLOWED_HOSTS` | `uae-open-data.zadstack.com,uaemcp.zadstack-5brands.workers.dev` | DNS-rebinding guard for `/mcp` |
+| `UAEMCP_ALLOWED_ORIGINS` | `https://maarad.zadstack.com,https://uae-open-data.zadstack.com` | CORS for the static Maarad canvas; keeps the Worker's own pages working |
+
+`UAEMCP_ALLOWED_ORIGINS` behaves as follows (`src/index.ts`):
+
+- empty: no `Access-Control-Allow-Origin` header is sent, so browser apps on
+  other origins cannot read responses (the static canvas then cannot submit
+  forms, run tools or search);
+- non-empty: listed origins receive `Access-Control-Allow-Origin` on responses
+  and preflights, and **every other `Origin` is rejected with 403
+  `INVALID_ORIGIN`**; always keep the Worker's own origin in the list because
+  browsers send `Origin` on same-origin `POST`s;
+- requests without an `Origin` header (curl, MCP clients, server-to-server) are
+  never affected.
+
+When deploying the Worker with `wrangler deploy`, put the value in the
+`[vars]` table of its `wrangler.toml` (or `vars` in `wrangler.jsonc`) so a
+redeploy does not reset it:
+
+```toml
+[vars]
+UAEMCP_ALLOWED_ORIGINS = "https://maarad.zadstack.com,https://uae-open-data.zadstack.com"
+```
+
+Variables set only in the dashboard are replaced by the next `wrangler deploy`
+unless `keep_vars = true` is set. Verify after any deploy:
+
+```bash
+curl -sI -H 'Origin: https://maarad.zadstack.com' \
+  https://uae-open-data.zadstack.com/api/v1/products | grep -i access-control-allow-origin
+```
+
+## Static edition on Maarad
+
+`scripts/export-static.ts` renders every public page from a local server,
+retains JSON snapshots fetched from the production Worker, rewrites links so the
+site works under the canvas subpath (`/c/uae-mcp/`), and points live calls at the
+Worker. `.github/workflows/deploy-canvas.yml` runs it on every push to `main`
+and publishes the ZIP with the Maarad Deploy API.
+
+The deploy job runs in the `MAARAD_DEPLOY_KEY` deployment environment
+(Settings → Environments). Configuration:
+
+- secret `MAARAD_DEPLOY_KEY`: the canvas deploy key (`cd_…`), stored in that
+  environment (a repository secret of the same name is also visible to the job).
+  Without it the workflow builds and uploads the artifact but skips the deploy.
+- variable `MAARAD_CANVAS_ID` (optional): defaults to
+  `01a15f25-0111-703b-abdb-4171fdc3e930`.
+- variable `UAEMCP_LIVE_ORIGIN` (optional): defaults to
+  `https://uae-open-data.zadstack.com`.
+
+Run it locally:
+
+```bash
+bun src/index.ts http --port 8080 &
+bun scripts/export-static.ts --base http://127.0.0.1:8080 --out dist/static --zip dist/site.zip
+```
 
 ## Bun process
 
