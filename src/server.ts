@@ -91,7 +91,7 @@ function text(payload: Json) {
 
 function enforceStrictToolSchemas(server: McpServer): void {
   const registerTool = server.registerTool.bind(server);
-  server.registerTool = ((name: string, config: Record<string, unknown>, handler: ToolCallback<z.ZodObject<z.ZodRawShape, "strict">>) => {
+  server.registerTool = ((name: string, config: Record<string, unknown>, handler: ToolCallback<z.ZodObject<z.ZodRawShape>>) => {
     const schema = config.inputSchema;
     const strictSchema = schema instanceof z.ZodObject
       ? schema.strict()
@@ -614,8 +614,8 @@ export function buildServer(dependencies: RuntimeDependencies = {}): McpServer {
         id: z.string(), name_en: z.string(), name_ar: z.string(), owner: z.string(), base_url: z.string(),
         kind: z.string().default("metadata"), endpoint: z.string().optional(), docs_url: z.string().optional(),
         category: z.string().optional(), license: z.string().optional(), notes: z.string().optional(),
-        row_path: z.array(z.string()).optional(), default_params: z.record(z.unknown()).optional(),
-        connector_config: z.record(z.unknown()).optional(), max_page_size: z.number().int().positive().optional(),
+        row_path: z.array(z.string()).optional(), default_params: z.record(z.string(), z.unknown()).optional(),
+        connector_config: z.record(z.string(), z.unknown()).optional(), max_page_size: z.number().int().positive().optional(),
         token: z.string().optional(),
       },
     },

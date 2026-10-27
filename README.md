@@ -10,7 +10,7 @@
 <p align="center"><strong>The Emirates, queryable.</strong></p>
 
 <p align="center">
-  <a href="https://uae-open-data.zadstack.com/health"><img src="https://img.shields.io/badge/LIVE-uae--open--data.zadstack.com-087443?style=flat-square" alt="Live instance"></a>
+  <a href="https://uae-open-data.zadstack.com/health"><img src="https://img.shields.io/badge/instance-uae--open--data.zadstack.com-087443?style=flat-square" alt="Configured instance — open its health endpoint to check availability"></a>
   <a href="https://maarad.zadstack.com/c/uae-mcp/"><img src="https://img.shields.io/badge/STATIC-maarad.zadstack.com-173d2d?style=flat-square" alt="Static edition"></a>
   <a href="https://github.com/zadstack/uaemcp/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/zadstack/uaemcp/ci.yml?style=flat-square&label=CI" alt="CI status"></a>
   <a href="https://www.npmjs.com/package/uaemcp"><img src="https://img.shields.io/npm/v/uaemcp?style=flat-square&logo=npm" alt="npm version"></a>
@@ -414,7 +414,7 @@ Registry with an SBOM and build provenance:
 ```bash
 docker run --rm -p 127.0.0.1:8080:8080 \
   -e UAEMCP_ALLOWED_HOSTS=127.0.0.1,localhost \
-  ghcr.io/zad-tools/uaemcp:edge
+  ghcr.io/zadstack/uaemcp:edge
 ```
 
 Or use the hardened registry Compose file with a persistent SQLite volume,
@@ -736,5 +736,25 @@ See [docs/API.md](docs/API.md), [docs/RECIPES.md](docs/RECIPES.md),
 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md), [docs/FAQ.md](docs/FAQ.md), and the
 [runnable examples](examples/README.md) for the complete developer path.
 The security review is in [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), and the
-evidence-backed release audit and requirement-by-requirement status are in
-[docs/COMPLETENESS.md](docs/COMPLETENESS.md).
+evidence-backed release audit is in [docs/COMPLETENESS.md](docs/COMPLETENESS.md).
+The requirement-by-requirement status is tracked in [docs/COMPLETENESS.md](docs/COMPLETENESS.md).
+
+## Company container image
+
+The maintained container is published under the company account and linked to
+[`zadstack/uaemcp`](https://github.com/zadstack/uaemcp).
+
+```sh
+docker pull ghcr.io/zadstack/uaemcp:latest
+```
+
+Use the **publish-container** workflow to publish the current source.
+`latest` tracks stable releases and manual snapshots; `sha-…` tags identify
+the source commit. The old personal-account packages have been removed; use
+the company installation URL above. Publishing does not change repository visibility.
+
+### Versioned updates
+
+See [container releases and migration](docs/container-releases.md) for numbered
+versions, automatic release publishing, runtime verification, and the updated
+company installation commands.

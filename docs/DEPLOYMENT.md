@@ -4,7 +4,7 @@
 
 The `publish-container` workflow builds the same Dockerfile for `linux/amd64`
 and `linux/arm64`, publishes it to
-`ghcr.io/zad-tools/uaemcp`, attaches an SBOM and
+`ghcr.io/zadstack/uaemcp`, attaches an SBOM and
 maximum-mode provenance, then runs the published amd64 image to verify its CLI
 version. Use `compose.ghcr.yml` for a registry-backed self-host with a persistent
 data volume and reduced container privileges.
@@ -70,10 +70,12 @@ site works under the canvas subpath (`/c/uae-mcp/`), and points live calls at th
 Worker. `.github/workflows/deploy-canvas.yml` runs it on every push to `main`
 and publishes the ZIP with the Maarad Deploy API.
 
-Repository configuration (Settings → Secrets and variables → Actions):
+The deploy job runs in the `MAARAD_DEPLOY_KEY` deployment environment
+(Settings → Environments). Configuration:
 
-- secret `MAARAD_DEPLOY_KEY`: the canvas deploy key (`cd_…`). Without it the
-  workflow builds and uploads the artifact but skips the deploy.
+- secret `MAARAD_DEPLOY_KEY`: the canvas deploy key (`cd_…`), stored in that
+  environment (a repository secret of the same name is also visible to the job).
+  Without it the workflow builds and uploads the artifact but skips the deploy.
 - variable `MAARAD_CANVAS_ID` (optional): defaults to
   `01a15f25-0111-703b-abdb-4171fdc3e930`.
 - variable `UAEMCP_LIVE_ORIGIN` (optional): defaults to
