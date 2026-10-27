@@ -42,7 +42,7 @@ jobs:
           bun-version: 1.3.14
       - name: Validate source and release rules
         run: |
-          node --test scripts/container-release.check.mjs
+          node --test scripts/container-release.check.mjs scripts/numbered-image.check.mjs
           bun install --frozen-lockfile
           bun run check
       - name: Resolve release version
@@ -55,6 +55,25 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Protect immutable numbered images
+        id: existing
+        env:
+          NUMBERED_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          echo 'null' > existing-manifest.json
+          echo '{}' > existing-images.json
+          if [ -n "$NUMBERED_VERSION" ]; then
+            if docker buildx imagetools inspect "${IMAGE_NAME}:${NUMBERED_VERSION}" --format '{{json .Manifest}}' > candidate-manifest.json 2> inspect-error.txt; then
+              mv candidate-manifest.json existing-manifest.json
+              docker buildx imagetools inspect "${IMAGE_NAME}:${NUMBERED_VERSION}" --format '{{json .Image}}' > existing-images.json
+            elif grep -Eqi 'denied|unauthorized|forbidden|failed to authorize|error getting credentials|timeout|connection' inspect-error.txt || ! grep -Eqi 'manifest unknown|not found|name unknown' inspect-error.txt; then
+              cat inspect-error.txt >&2
+              exit 1
+            fi
+          fi
+          export SOURCE_REVISION=$(git rev-parse HEAD)
+          node scripts/numbered-image.mjs existing-manifest.json existing-images.json
       - uses: docker/metadata-action@v6
         id: meta
         with:
@@ -71,6 +90,7 @@ jobs:
             org.opencontainers.image.description=Official UAE open data over MCP and REST on Bun
             org.opencontainers.image.vendor=Open Emirates Intelligence
       - name: Build runtime for pre-publication test
+        if: steps.existing.outputs.reuse != 'true'
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -79,8 +99,10 @@ jobs:
           push: false
           tags: company-container:smoke
       - name: Test runtime before publication
+        if: steps.existing.outputs.reuse != 'true'
         run: bash scripts/smoke-container.sh company-container:smoke bun 8080 /healthz
       - uses: docker/build-push-action@v7
+        if: steps.existing.outputs.reuse != 'true'
         id: build
         with:
           context: .
@@ -92,15 +114,41 @@ jobs:
           cache-to: type=gha,mode=max
           sbom: true
           provenance: mode=max
+      - name: Reuse verified runtime for duplicate events
+        if: steps.existing.outputs.reuse == 'true'
+        env:
+          REUSED_DIGEST: ${{ steps.existing.outputs.digest }}
+        run: |
+          docker pull --platform linux/amd64 "${IMAGE_NAME}@${REUSED_DIGEST}"
+          bash scripts/smoke-container.sh "${IMAGE_NAME}@${REUSED_DIGEST}" bun 8080 /healthz https://github.com/zadstack/uaemcp
+      - name: Select the published immutable digest
+        id: published
+        env:
+          BUILT_DIGEST: ${{ steps.build.outputs.digest }}
+          REUSED_DIGEST: ${{ steps.existing.outputs.digest }}
+        run: |
+          digest="${REUSED_DIGEST:-$BUILT_DIGEST}"
+          [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+      - name: Verify both architectures and published source identity
+        env:
+          PUBLISHED_DIGEST: ${{ steps.published.outputs.digest }}
+          NUMBERED_VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          docker buildx imagetools inspect "${IMAGE_NAME}@${PUBLISHED_DIGEST}" --format '{{json .Manifest}}' > published-manifest.json
+          docker buildx imagetools inspect "${IMAGE_NAME}@${PUBLISHED_DIGEST}" --format '{{json .Image}}' > published-images.json
+          export SOURCE_REVISION=$(git rev-parse HEAD)
+          node scripts/numbered-image.mjs published-manifest.json published-images.json
       - name: Verify the published amd64 CLI
         run: |
-          image="${IMAGE_NAME}@${{ steps.build.outputs.digest }}"
+          image="${IMAGE_NAME}@${{ steps.published.outputs.digest }}"
           docker pull --platform linux/amd64 "$image"
           test "$(docker run --rm --platform linux/amd64 "$image" bun src/index.ts --version)" = "$(node -p "require('./package.json').version")"
       - uses: actions/attest-build-provenance@v4
+        if: steps.existing.outputs.reuse != 'true'
         with:
           subject-name: ${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.build.outputs.digest }}
+          subject-digest: ${{ steps.published.outputs.digest }}
           push-to-registry: true
       - name: Verify anonymous public access
         run: |
@@ -109,7 +157,7 @@ jobs:
 
       - name: Verify public published runtime
         env:
-          PUBLISHED_IMAGE: ${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+          PUBLISHED_IMAGE: ${{ env.IMAGE_NAME }}@${{ steps.published.outputs.digest }}
           EXPECTED_SOURCE: https://github.com/zadstack/uaemcp
         run: |
           docker logout ghcr.io

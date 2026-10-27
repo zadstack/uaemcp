@@ -1,0 +1,67 @@
+name: Restore original UAEMCP 1.85.0 image
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type restore-original-1.85.0 after 1.85.1 is published and verified'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: company-container-publication
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    if: github.repository == 'zadstack/uaemcp' && inputs.confirmation == 'restore-original-1.85.0'
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ghcr.io/zadstack/uaemcp
+      ORIGINAL_DIGEST: sha256:370018ae89be1bbc3df03c441a7b9e9754d608e33a6c13f5397231387a362b04
+      ORIGINAL_REVISION: 4e9b178e989afd422f6066c6c26a05cb8156e3e8
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify the exact retained original and the replacement release
+        run: |
+          set -euo pipefail
+          docker buildx imagetools inspect "${IMAGE_NAME}@${ORIGINAL_DIGEST}" --format '{{json .Manifest}}' > original-manifest.json
+          docker buildx imagetools inspect "${IMAGE_NAME}@${ORIGINAL_DIGEST}" --format '{{json .Image}}' > original-images.json
+          test "$(jq -r .digest original-manifest.json)" = "$ORIGINAL_DIGEST"
+          NUMBERED_VERSION=1.85.0 SOURCE_REVISION="$ORIGINAL_REVISION" node scripts/numbered-image.mjs original-manifest.json original-images.json
+          docker buildx imagetools inspect "${IMAGE_NAME}:1.85.1" --format '{{json .Manifest}}' > replacement-manifest.json
+          docker buildx imagetools inspect "${IMAGE_NAME}:1.85.1" --format '{{json .Image}}' > replacement-images.json
+          NUMBERED_VERSION=1.85.1 SOURCE_REVISION="$(git rev-parse HEAD)" node scripts/numbered-image.mjs replacement-manifest.json replacement-images.json
+          replacement=$(jq -r .digest replacement-manifest.json)
+          latest=$(docker buildx imagetools inspect "${IMAGE_NAME}:latest" --format '{{json .Manifest}}' | jq -r .digest)
+          test "$latest" = "$replacement"
+          echo "REPLACEMENT_DIGEST=$replacement" >> "$GITHUB_ENV"
+          docker pull --platform linux/amd64 "${IMAGE_NAME}@${ORIGINAL_DIGEST}"
+          test "$(docker run --rm --platform linux/amd64 "${IMAGE_NAME}@${ORIGINAL_DIGEST}" bun src/index.ts --version)" = 1.85.0
+          bash scripts/smoke-container.sh "${IMAGE_NAME}@${ORIGINAL_DIGEST}" bun 8080 /healthz https://github.com/zadstack/uaemcp
+      - name: Restore only the original numbered tag without rebuilding
+        run: |
+          set -euo pipefail
+          docker buildx imagetools create --tag "${IMAGE_NAME}:1.85.0" "${IMAGE_NAME}@${ORIGINAL_DIGEST}"
+          restored=$(docker buildx imagetools inspect "${IMAGE_NAME}:1.85.0" --format '{{json .Manifest}}' | jq -r .digest)
+          replacement=$(docker buildx imagetools inspect "${IMAGE_NAME}:1.85.1" --format '{{json .Manifest}}' | jq -r .digest)
+          latest=$(docker buildx imagetools inspect "${IMAGE_NAME}:latest" --format '{{json .Manifest}}' | jq -r .digest)
+          test "$restored" = "$ORIGINAL_DIGEST"
+          test "$replacement" = "$REPLACEMENT_DIGEST"
+          test "$latest" = "$REPLACEMENT_DIGEST"
+      - name: Verify public manifests after restoration
+        run: |
+          docker logout ghcr.io
+          docker buildx imagetools inspect "${IMAGE_NAME}:1.85.0"
+          docker buildx imagetools inspect "${IMAGE_NAME}:1.85.1"

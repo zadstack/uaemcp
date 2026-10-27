@@ -7,7 +7,7 @@ commands to use the company namespace; old personal URLs no longer work.
 ```sh
 docker pull ghcr.io/zadstack/uaemcp:latest
 # Pin a numbered release for an explicit upgrade policy:
-docker pull ghcr.io/zadstack/uaemcp:1.85.0
+docker pull ghcr.io/zadstack/uaemcp:1.85.1
 ```
 
 ## Publishing
@@ -35,3 +35,9 @@ Main-branch pushes continue to publish only the `edge` and SHA tags.
 The workflows use the repository's `GITHUB_TOKEN`; a personal publishing token
 is not required. Package and repository visibility are unchanged. Release
 publication does not require enabling public package creation for new packages.
+
+## Numbered image identity
+
+Numbered images are immutable to their source revision. Duplicate tag-push and release-published events reuse a verified existing image with both Linux architectures and the same version/revision labels; a different source must bump the package version. Snapshot aliases remain mutable.
+
+The one-off `restore-original-185` workflow can restore only the exact retained pre-update 1.85.0 manifest, after verifying the original source and a successfully published 1.85.1 replacement. It cannot select arbitrary images or versions and must leave latest on 1.85.1. Existing Git tags are never moved.

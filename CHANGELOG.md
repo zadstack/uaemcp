@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.85.1 - 2026-10-28
+
+- Prevent numbered container images from being overwritten; duplicate release events reuse a verified same-source multi-architecture image.
+- Release the reviewed GeoJSON runtime, Bun type definitions and Bun container updates under a new patch version.
+- Preserve genuine product media and the current company package documentation in the README ledger redesign.
+- Keep current patched Zod instead of merging the superseded vulnerable downgrade.
+- Supersede the newly created GitHub 1.85.0 release; the company container had already used that version before these changes.
+
 ## 1.85.0 - 2026-08-12
 
 - Added the optional Open Emirates Pro layer: stateless HMAC API keys (`oe_…`),
