@@ -130,17 +130,15 @@ jobs:
           digest="${REUSED_DIGEST:-$BUILT_DIGEST}"
           [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
-      - name: Verify both supported architectures
+      - name: Verify both architectures and published source identity
         env:
           PUBLISHED_DIGEST: ${{ steps.published.outputs.digest }}
+          NUMBERED_VERSION: ${{ steps.meta.outputs.version }}
         run: |
-          docker buildx imagetools inspect "${IMAGE_NAME}@${PUBLISHED_DIGEST}" --raw > published-index.json
-          python3 - <<'PY'
-          import json
-          doc = json.load(open('published-index.json'))
-          platforms = {(m.get('platform', {}).get('os'), m.get('platform', {}).get('architecture')) for m in doc.get('manifests', [])}
-          assert {('linux', 'amd64'), ('linux', 'arm64')} <= platforms, platforms
-          PY
+          docker buildx imagetools inspect "${IMAGE_NAME}@${PUBLISHED_DIGEST}" --format '{{json .Manifest}}' > published-manifest.json
+          docker buildx imagetools inspect "${IMAGE_NAME}@${PUBLISHED_DIGEST}" --format '{{json .Image}}' > published-images.json
+          export SOURCE_REVISION=$(git rev-parse HEAD)
+          node scripts/numbered-image.mjs published-manifest.json published-images.json
       - name: Verify the published amd64 CLI
         run: |
           image="${IMAGE_NAME}@${{ steps.published.outputs.digest }}"

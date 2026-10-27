@@ -12,7 +12,7 @@ export function numberedImagePlan(version, revision, manifest, images) {
     const config = configs.find(c => c?.os === 'linux' && c.architecture === architecture);
     const labels = config?.config?.Labels ?? {};
     if (!platforms.has(`linux/${architecture}`) || !config) throw Error(`Existing numbered image lacks linux/${architecture}; do not overwrite it`);
-    if (labels['org.opencontainers.image.version'] !== version || labels['org.opencontainers.image.revision'] !== revision) {
+    if (labels['org.opencontainers.image.version'] !== version || labels['org.opencontainers.image.revision'] !== revision || labels['org.opencontainers.image.source'] !== 'https://github.com/zadstack/uaemcp') {
       throw Error(`Numbered image ${version} already exists with different or unverified source. Bump package.json and the release version; numbered images cannot be overwritten.`);
     }
   }

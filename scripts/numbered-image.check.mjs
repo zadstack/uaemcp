@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { numberedImagePlan } from './numbered-image.mjs';
 const revision = 'a'.repeat(40), digest = 'sha256:' + 'b'.repeat(64);
 const manifest = { digest, manifests: ['amd64','arm64'].map(architecture => ({platform:{os:'linux',architecture}})) };
-const config = architecture => ({os:'linux',architecture,config:{Labels:{'org.opencontainers.image.version':'1.2.3','org.opencontainers.image.revision':revision}}});
+const config = architecture => ({os:'linux',architecture,config:{Labels:{'org.opencontainers.image.version':'1.2.3','org.opencontainers.image.revision':revision,'org.opencontainers.image.source':'https://github.com/zadstack/uaemcp'}}});
 const images = {'linux/amd64':config('amd64'),'linux/arm64':config('arm64')};
 test('new numbered images and mutable snapshots can build',()=>{
  assert.deepEqual(numberedImagePlan('1.2.3',revision,null,{}),{reuse:false,digest:''});
@@ -21,3 +21,12 @@ test('missing platform or config cannot silently regress architecture support',(
  assert.throws(()=>numberedImagePlan('1.2.3',revision,manifest,{'linux/amd64':config('amd64')}),/arm64/);
 });
 test('invalid digest cannot be reused',()=>assert.throws(()=>numberedImagePlan('1.2.3',revision,{...manifest,digest:'unknown'},images)));
+
+test('wrong or missing source on arm64 cannot be hidden by an amd64-only smoke test',()=>{
+ for(const source of [undefined,'https://github.com/another/repository']) {
+  const changed=structuredClone(images);
+  if(source) changed['linux/arm64'].config.Labels['org.opencontainers.image.source']=source;
+  else delete changed['linux/arm64'].config.Labels['org.opencontainers.image.source'];
+  assert.throws(()=>numberedImagePlan('1.2.3',revision,manifest,changed),/different or unverified source/);
+ }
+});
