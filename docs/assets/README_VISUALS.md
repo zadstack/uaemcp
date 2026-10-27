@@ -25,3 +25,16 @@ GIF is a deterministic 960 × 540 export with a bounded 128-colour palette.
 - Forest, union red, sand, paper and ink palette.
 - Sharp grid composition; no gradients, glass effects or invented claims.
 - Independent open-source initiative disclaimer retained in the hero.
+
+## Ledger README set (light and dark)
+
+`bun scripts/generate-readme-ledger.ts` writes `docs/assets/readme/`: the hero,
+coverage strip, architecture diagram, quick-start terminal and section divider,
+each in a `-light` and `-dark` variant selected by `<picture>` and
+`prefers-color-scheme`. Counts are read from `coverageSummary()` and
+`docs/mcp-tools.json`; `bun run check:readme-ledger` (part of `bun run check`)
+fails when they drift. Animations are CSS inside the SVG, run only under
+`prefers-reduced-motion: no-preference`, and use no external fonts or scripts.
+The palette and type follow DESIGN.md: civic forest, archive ivory, evidence
+ink, signal red, registry green and seal gold; Dubai and IBM Plex Mono with
+system fallbacks; square corners and ruled surfaces.

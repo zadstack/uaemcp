@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="docs/assets/readme-hero.svg" alt="Open Emirates Intelligence — animated federation data map" width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/hero-dark.svg">
+    <img src="docs/assets/readme/hero-light.svg" alt="Open Emirates Intelligence — the Emirates, queryable. Public surfaces: MCP, REST, vector tiles and six SDKs, every record source-cited" width="100%">
+  </picture>
 </p>
 
 <h1 align="center">Open Emirates Intelligence</h1>
@@ -16,6 +19,113 @@
 </p>
 
 <p align="center">Official UAE open data for agents, researchers and builders—over MCP, REST, vector maps and six SDKs.</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/stats-dark.svg">
+    <img src="docs/assets/readme/stats-light.svg" alt="48 official portals indexed · 16 live record connectors · 46 MCP tools · 6 SDKs" width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <a href="#live-instances">Live instances</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#evidence-products">Evidence products</a> ·
+  <a href="#http-endpoints">Endpoints</a> ·
+  <a href="#packages-and-sdks">Packages &amp; SDKs</a> ·
+  <a href="#mcp-tools">MCP tools</a> ·
+  <a href="#configuration">Configuration</a> ·
+  <a href="#contributing-and-verification">Contributing</a>
+</p>
+
+Maintained by **Ahmed Morsy**. Released under the MIT license and built on the
+original open-source UAEMCP work credited in [LICENSE](LICENSE).
+
+Open Emirates is an independent open-source initiative. It is not affiliated
+with or endorsed by the UAE Government. Every data product identifies its
+official source, evidence boundary, retrieval date and available licence terms.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/divider-dark.svg">
+    <img src="docs/assets/readme/divider-light.svg" alt="" aria-hidden="true" width="100%">
+  </picture>
+</p>
+
+## Live instances
+
+| Instance | URL | What it serves |
+| --- | --- | --- |
+| Cloudflare Worker (production) | [uae-open-data.zadstack.com](https://uae-open-data.zadstack.com/) | Every public page, REST `/api/v1/*`, MCP at [`/mcp`](https://uae-open-data.zadstack.com/mcp) (requires `X-API-Key`), liveness at [`/health`](https://uae-open-data.zadstack.com/health), contract at [`/openapi.json`](https://uae-open-data.zadstack.com/openapi.json) |
+| Static edition (Maarad canvas) | [maarad.zadstack.com/c/uae-mcp](https://maarad.zadstack.com/c/uae-mcp/) | A static export of all 27 public pages with retained JSON snapshots; filters, forms and the MCP console call the Worker live |
+
+The static edition is read-only and rebuilt from this repository. Its retained
+snapshots carry the retrieval time of the export; anything fresher, and every
+`POST`, is fetched from the Worker, which allows the canvas origin through
+`UAEMCP_ALLOWED_ORIGINS`.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/divider-dark.svg">
+    <img src="docs/assets/readme/divider-light.svg" alt="" aria-hidden="true" width="100%">
+  </picture>
+</p>
+
+## Quick start
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/quickstart-dark.svg">
+    <img src="docs/assets/readme/quickstart-light.svg" alt="Terminal: bunx --bun uaemcp@latest doctor, bunx --bun uaemcp@latest http, and curl against the hosted Worker /health and /api/v1/places" width="920">
+  </picture>
+</p>
+
+Three ways in, from zero setup to self-hosting:
+
+| Path | Start here |
+| --- | --- |
+| **Hosted MCP** | Point your client at `https://uae-open-data.zadstack.com/mcp` with an `X-API-Key` — see [Hosted endpoint](#hosted-endpoint) |
+| **Public REST** | `curl https://uae-open-data.zadstack.com/api/v1/sources` — free, per-IP rate limited, documented at [`/openapi.json`](https://uae-open-data.zadstack.com/openapi.json) |
+| **Self-hosted** | `bunx --bun uaemcp@latest` (stdio) or `bunx --bun uaemcp@latest http` — see [Run with Bun](#run-with-bun) and [the container](#run-the-signed-container) |
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/divider-dark.svg">
+    <img src="docs/assets/readme/divider-light.svg" alt="" aria-hidden="true" width="100%">
+  </picture>
+</p>
+
+## Architecture
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/architecture-dark.svg">
+    <img src="docs/assets/readme/architecture-light.svg" alt="Architecture: official sources flow through typed connectors into the Bun engine, exposed as MCP, REST, vector tiles and SDKs, and delivered by the Cloudflare Worker, the Maarad static canvas, npm and a container image" width="100%">
+  </picture>
+</p>
+
+The server keeps the public `uaemcp` contract and extends it to 46 source-cited
+MCP tools, seventeen resources, three prompts, bilingual catalog search, CKAN,
+OpenDataSoft, ArcGIS, Socrata, JSON, CSV, XLSX, XML, RSS, GraphQL, SDMX and
+SPARQL connectors, geo queries,
+aggregation, PII redaction, SSRF protection, and
+health/readiness/Prometheus endpoints. Bun SQLite stores health history and
+bounded dataset snapshots for repeatable comparisons.
+
+Agents can start with three stable facades instead of learning the complete
+specialist surface: `uae_discover` finds local catalog evidence without live
+fan-out by default, `uae_query` reads and shapes source data, and `uae_analyze`
+composes methodology-backed indicators, recipes and dossiers. Existing tools
+remain available. Set `UAEMCP_TOOL_PROFILE=core` to publish only the six core
+agent tools, or use `research`, `geo` and `full` profiles.
+
+The public gateway is fully bilingual: navigation, product evidence, catalog,
+connectors, dataset discovery, playground controls and runtime states switch
+between English and Arabic. Every public application uses Dubai Font with native
+RTL composition.
+
+### Interface
 
 <p align="center">
   <img src="docs/assets/oei-motion.gif" alt="Animated Open Emirates Intelligence product preview" width="760">
@@ -40,72 +150,14 @@
   <img src="docs/assets/screenshots/landing-arabic.jpg" alt="Arabic RTL Open Emirates Intelligence gateway" width="100%">
 </p>
 
-Maintained by **Ahmed Morsy**. Released under the MIT license and built on the
-original open-source UAEMCP work credited in [LICENSE](LICENSE).
-
-Open Emirates is an independent open-source initiative. It is not affiliated
-with or endorsed by the UAE Government. Every data product identifies its
-official source, evidence boundary, retrieval date and available licence terms.
-
-## Live instances
-
-| Instance | URL | What it serves |
-| --- | --- | --- |
-| Cloudflare Worker (production) | [uae-open-data.zadstack.com](https://uae-open-data.zadstack.com/) | Every public page, REST `/api/v1/*`, MCP at [`/mcp`](https://uae-open-data.zadstack.com/mcp) (requires `X-API-Key`), liveness at [`/health`](https://uae-open-data.zadstack.com/health), contract at [`/openapi.json`](https://uae-open-data.zadstack.com/openapi.json) |
-| Static edition (Maarad canvas) | [maarad.zadstack.com/c/uae-mcp](https://maarad.zadstack.com/c/uae-mcp/) | A static export of all 27 public pages with retained JSON snapshots; filters, forms and the MCP console call the Worker live |
-
-The static edition is read-only and rebuilt from this repository. Its retained
-snapshots carry the retrieval time of the export; anything fresher, and every
-`POST`, is fetched from the Worker, which allows the canvas origin through
-`UAEMCP_ALLOWED_ORIGINS`.
-
-## Independent packages
-
-The repository is now a monorepo with separate release lines:
-
-- `@open-emirates/contracts` for dependency-free response contracts.
-- `@open-emirates/sdk` for a hybrid TypeScript client with generated tool types,
-  runtime Schema 2.1 discovery, local validation, bounded retries and pagination.
-- `@open-emirates/mcp` for the MCP stdio and Streamable HTTP entry point.
-- `uaemcp` remains the compatible engine and existing CLI during migration.
-
-The SDK has no MCP dependency. Package boundaries and publishing instructions
-are documented in [docs/PACKAGES.md](docs/PACKAGES.md).
-
-```ts
-import { OpenEmiratesClient } from "@open-emirates/sdk";
-
-const client = new OpenEmiratesClient();
-const result = await client.tools.call("uae_golden_residency", { action: "list" });
-```
-
-Known tools receive compile-time autocomplete; newer server tools remain callable
-through dynamic discovery. Golden Residency output is informational official-route
-guidance, not an eligibility or residence decision.
-
 <p align="center">
-  <img src="docs/assets/package-architecture.svg" alt="Open Emirates independent package architecture from contracts to SDK, MCP and the Bun engine" width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/divider-dark.svg">
+    <img src="docs/assets/readme/divider-light.svg" alt="" aria-hidden="true" width="100%">
+  </picture>
 </p>
 
-The server keeps the public `uaemcp` contract and extends it to 46 source-cited
-MCP tools, seventeen resources, three prompts, bilingual catalog search, CKAN,
-OpenDataSoft, ArcGIS, Socrata, JSON, CSV, XLSX, XML, RSS, GraphQL, SDMX and
-SPARQL connectors, geo queries,
-aggregation, PII redaction, SSRF protection, and
-health/readiness/Prometheus endpoints. Bun SQLite stores health history and
-bounded dataset snapshots for repeatable comparisons.
-
-Agents can start with three stable facades instead of learning the complete
-specialist surface: `uae_discover` finds local catalog evidence without live
-fan-out by default, `uae_query` reads and shapes source data, and `uae_analyze`
-composes methodology-backed indicators, recipes and dossiers. Existing tools
-remain available. Set `UAEMCP_TOOL_PROFILE=core` to publish only the six core
-agent tools, or use `research`, `geo` and `full` profiles.
-
-The public gateway is fully bilingual: navigation, product evidence, catalog,
-connectors, dataset discovery, playground controls and runtime states switch
-between English and Arabic. Every public application uses Dubai Font with native
-RTL composition.
+## Evidence products
 
 <p align="center">
   <a href="https://uae-open-data.zadstack.com/employment-gender"><img src="docs/assets/employment-gender-motion.svg" alt="Animated MOHRE employment-by-gender evidence ledger preserving annual ratios and interpretation boundaries" width="100%"></a>
@@ -281,6 +333,13 @@ rent-contract and road datasets as separate source-native annual series. Units
 never collapse into a composite property score, investment return or growth
 claim.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/divider-dark.svg">
+    <img src="docs/assets/readme/divider-light.svg" alt="" aria-hidden="true" width="100%">
+  </picture>
+</p>
+
 ## Hosted endpoint
 
 ```json
@@ -377,12 +436,13 @@ source <(uaemcp completion zsh)
 uaemcp --help
 ```
 
+## HTTP endpoints
+
 For Streamable HTTP:
 
 ```bash
 bun src/index.ts http --host 0.0.0.0 --port 8080
 ```
-
 Endpoints:
 
 - MCP: `POST /mcp`
@@ -409,10 +469,11 @@ Endpoints:
 - UAE Education Ledger: `GET /education` — FCSC-accredited 2023/2024 national totals, reconciliation checks and the separate seven-resource Ministry of Education catalogue
 - UAE Golden Residency Navigator: `GET /golden-residency` — 14 official routes with direct category pages at ICP/GDRFA/ADRO, federal-vs-local criteria warnings and a printable non-identifying readiness dossier
 
+- Industrial Change Monitor: `GET /api/v1/industry-atlas/change` — compares the two latest different retained samples; unchanged checks are deduplicated and sample movement is never described as economic growth
+
 <p align="center">
   <a href="https://uae-open-data.zadstack.com/golden-residency"><img src="docs/assets/golden-routing.svg" alt="Animated privacy-first Golden Residency routing to ICP, GDRFA Dubai and Abu Dhabi Residents Office" width="920"></a>
 </p>
-- Industrial Change Monitor: `GET /api/v1/industry-atlas/change` — compares the two latest different retained samples; unchanged checks are deduplicated and sample movement is never described as economic growth
 
 <table>
   <tr>
@@ -472,7 +533,44 @@ Endpoints:
 }
 ```
 
-## TypeScript SDK
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/divider-dark.svg">
+    <img src="docs/assets/readme/divider-light.svg" alt="" aria-hidden="true" width="100%">
+  </picture>
+</p>
+
+## Packages and SDKs
+
+### Independent packages
+
+The repository is now a monorepo with separate release lines:
+
+- `@open-emirates/contracts` for dependency-free response contracts.
+- `@open-emirates/sdk` for a hybrid TypeScript client with generated tool types,
+  runtime Schema 2.1 discovery, local validation, bounded retries and pagination.
+- `@open-emirates/mcp` for the MCP stdio and Streamable HTTP entry point.
+- `uaemcp` remains the compatible engine and existing CLI during migration.
+
+The SDK has no MCP dependency. Package boundaries and publishing instructions
+are documented in [docs/PACKAGES.md](docs/PACKAGES.md).
+
+```ts
+import { OpenEmiratesClient } from "@open-emirates/sdk";
+
+const client = new OpenEmiratesClient();
+const result = await client.tools.call("uae_golden_residency", { action: "list" });
+```
+
+Known tools receive compile-time autocomplete; newer server tools remain callable
+through dynamic discovery. Golden Residency output is informational official-route
+guidance, not an eligibility or residence decision.
+
+<p align="center">
+  <img src="docs/assets/package-architecture.svg" alt="Open Emirates independent package architecture from contracts to SDK, MCP and the Bun engine" width="100%">
+</p>
+
+### TypeScript SDK
 
 The same Bun package includes a zero-dependency typed REST client:
 
@@ -487,7 +585,7 @@ const records = await uae.records("moiat_industrial_licenses", { limit: 10 });
 Point `baseUrl` at the hosted endpoint or any self-hosted instance. Structured
 API failures throw `UaemcpClientError` with the HTTP status and public error code.
 
-## Generated SDKs
+### Generated SDKs
 
 The repository also ships generated clients for Python, Go, Rust, Java and C#
 under [`sdk/`](sdk/). All clients are generated from the live OpenAPI 3.1
@@ -500,6 +598,13 @@ bun run check:sdks
 
 The second command fails when an API change has not been propagated to every
 language. It is included in the main release check.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/divider-dark.svg">
+    <img src="docs/assets/readme/divider-light.svg" alt="" aria-hidden="true" width="100%">
+  </picture>
+</p>
 
 ## MCP tools
 
@@ -544,7 +649,7 @@ The project does not present every indexed portal as live data. Use:
 - `GET /api/v1/intelligence/recipes` to discover analytical recipes and run them by id.
 
 Current conservative coverage is 48 official sources indexed, 16 live record
-connectors, at least 222 known queryable datasets, 1 blocked connector, and 3
+connectors, at least 222 known queryable datasets, 3 blocked connectors, and 3
 key-required portals. Counts never imply
 that metadata-only portals are queryable.
 
@@ -610,7 +715,14 @@ https://your-domain.example/mcp
 The Nginx configuration disables buffering, caching, and compression on `/mcp`
 so Streamable HTTP responses are not delayed or rewritten.
 
-## Verify
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/divider-dark.svg">
+    <img src="docs/assets/readme/divider-light.svg" alt="" aria-hidden="true" width="100%">
+  </picture>
+</p>
+
+## Contributing and verification
 
 ```bash
 bun run check

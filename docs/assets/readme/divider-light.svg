@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="24" viewBox="0 0 1400 24" role="img" aria-labelledby="t d"><title id="t">Section divider</title><desc id="d">Ruled ledger divider</desc><style>
+text{font-family:Dubai,'Segoe UI','Noto Sans','Noto Sans Arabic',Arial,sans-serif}.m{font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.08em}.ar{direction:rtl;unicode-bidi:embed}
+
+@media (prefers-reduced-motion:no-preference){@keyframes run{from{transform:translateX(0)}to{transform:translateX(1240px)}}.r{animation:run 9s linear infinite}}
+</style><path d="M40 9H1360M40 15H1360" stroke="#13251d" opacity=".25"/><rect x="40" y="6" width="12" height="12" fill="#c34032"/><rect x="1348" y="6" width="12" height="12" fill="#bf9a55"/><rect class="r" x="64" y="10" width="72" height="4" fill="#087443"/></svg>
